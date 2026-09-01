@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14171f">
+<title>Business Titan — টিচার রিমাইন্ডার</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14171f;--navy:#1b2436;--accent:#ef7d1a;--accent-dark:#c9640f;
+  --bg:#f3f4f8;--panel:#ffffff;--panel2:#f8f5f0;--muted:#6b7280;--line:#e6e8ee;
+  --green:#1fae5c;--green-bg:#e8f8ee;--blue:#229ED9;--blue-bg:#e7f4fb;--red:#d94f30;--red-bg:#fdece7;
+  --purple:#7c4fd9;--purple-bg:#efe9fb;
+  --radius:16px;--shadow:0 8px 24px rgba(20,23,31,.08);
+  font-family:'Hind Siliguri','Manrope',system-ui,sans-serif;
+}
+body.dark{--bg:#0e1117;--panel:#171b24;--panel2:#1c212c;--ink:#eef0f4;--muted:#9aa3b2;--line:#2a3040;--shadow:0 10px 26px rgba(0,0,0,.4)}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+h1,h2,h3{font-family:'Manrope','Hind Siliguri',sans-serif;margin:0}
+.header{background:var(--navy);color:#fff;padding:18px 18px 54px}
+.brandrow{display:flex;align-items:center;gap:12px;max-width:1000px;margin:0 auto}
+.logo{width:46px;height:46px;border-radius:13px;background:var(--accent);color:#161616;display:grid;place-items:center;font-weight:800;font-size:20px;font-family:Manrope;flex-shrink:0}
+.brandtxt b{display:block;font-size:18px;letter-spacing:.3px}
+.brandtxt span{display:block;font-size:12px;opacity:.65}
+.headerbtns{margin-left:auto;display:flex;gap:8px}
+.iconbtn{width:38px;height:38px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;display:grid;place-items:center;font-size:16px}
+.wrap{max-width:1000px;margin:-38px auto 60px;padding:0 16px}
+.tabs{display:flex;gap:6px;background:var(--panel);border-radius:16px;box-shadow:var(--shadow);padding:6px;overflow-x:auto}
+.tabs button{flex:1;white-space:nowrap;border:0;background:transparent;color:var(--muted);padding:11px 8px;border-radius:12px;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;gap:5px}
+.tabs button.active{background:var(--ink);color:#fff}
+body.dark .tabs button.active{background:var(--accent);color:#161616}
+.view{display:none;margin-top:16px}
+.view.active{display:block}
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:1fr 1fr}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:760px){.g4{grid-template-columns:repeat(2,1fr)}.g2{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
+.stat .num{font-size:26px;font-weight:800;font-family:Manrope}
+.stat .lbl{font-size:12px;color:var(--muted);margin-top:2px}
+.section-title{display:flex;align-items:center;gap:8px;margin:22px 0 10px}
+.section-title h2{font-size:16px}
+.section-title .cnt{font-size:12px;color:var(--muted);background:var(--panel2);padding:3px 9px;border-radius:999px}
+.empty{text-align:center;padding:28px 16px;color:var(--muted);background:var(--panel2);border:1px dashed var(--line);border-radius:14px;font-size:13.5px}
+.entrycard{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px 16px;position:relative;overflow:hidden}
+.entrycard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--accent)}
+.entrycard.exam::before{background:var(--purple)}
+.entrycard .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding-left:8px}
+.subj{font-weight:800;font-size:15.5px}
+.lec{font-size:12px;color:var(--muted);margin-top:2px}
+.typechip{display:inline-block;margin-top:6px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
+.typechip.class{background:var(--blue-bg);color:var(--blue)}
+.typechip.exam{background:var(--purple-bg);color:var(--purple)}
+.datepill{font-size:11.5px;color:var(--muted);background:var(--panel2);padding:4px 9px;border-radius:999px;white-space:nowrap}
+.sentbadge{font-size:11px;color:var(--green);background:var(--green-bg);padding:3px 8px;border-radius:999px;font-weight:700}
+.teacherrow{display:flex;gap:8px;align-items:center;margin:12px 0 10px;padding-left:8px}
+.teacherrow select{flex:1;border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:9px 10px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;padding-left:8px}
+.btn{border:0;border-radius:10px;padding:9px 13px;font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.btn.wa{background:var(--green-bg);color:var(--green)}
+.btn.tg{background:var(--blue-bg);color:var(--blue)}
+.btn.copy{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+.btn.primary{background:var(--ink);color:#fff}
+body.dark .btn.primary{background:var(--accent);color:#161616}
+.btn.soft{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+.btn.red{background:var(--red-bg);color:var(--red)}
+.btn.block{width:100%;justify-content:center}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.toolbar input,.toolbar select{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:9px 11px}
+.toolbar .grow{flex:1;min-width:150px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{background:var(--panel2);color:var(--muted);font-weight:700;position:sticky;top:0}
+tr:last-child td{border-bottom:0}
+.rowbtn{border:0;background:transparent;padding:4px 6px;border-radius:8px;color:var(--muted)}
+.rowbtn:hover{background:var(--panel2)}
+.field{display:grid;gap:5px;margin-bottom:11px}
+.field label{font-size:12px;font-weight:700;color:var(--muted)}
+.field input,.field select,.field textarea{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:10px 11px;width:100%}
+.field textarea{min-height:100px;resize:vertical;font-family:inherit}
+.modalback{position:fixed;inset:0;background:rgba(10,14,22,.55);display:none;align-items:flex-end;justify-content:center;z-index:60}
+.modalback.open{display:flex}
+.modal{background:var(--panel);width:min(640px,100%);max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:20px}
+@media(min-width:640px){.modalback{align-items:center}.modal{border-radius:18px}}
+.modal h3{margin-bottom:14px}
+.modalactions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+.teachercard{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:13px 14px}
+.teachercard b{font-size:14.5px}
+.teachercard .sub{font-size:12px;color:var(--muted);margin-top:2px}
+.avatar{width:38px;height:38px;border-radius:10px;background:var(--panel2);display:grid;place-items:center;font-weight:800;color:var(--accent-dark);flex-shrink:0}
+.toggle{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:10px 0}
+.switch{width:44px;height:24px;background:var(--panel2);border:1px solid var(--line);border-radius:999px;position:relative;flex-shrink:0}
+.switch i{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--muted);transition:.15s}
+.switch.on{background:var(--accent);border-color:var(--accent)}
+.switch.on i{left:22px;background:#fff}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:999px;font-size:13px;font-weight:600;display:none;z-index:100;box-shadow:var(--shadow)}
+.toast.show{display:block}
+.hint{font-size:12px;color:var(--muted);line-height:1.6}
+.divider{border:0;border-top:1px dashed var(--line);margin:14px 0}
+.subhead{font-weight:800;font-size:14px;margin:4px 0 10px}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="brandrow">
+    <div class="logo">B</div>
+    <div class="brandtxt"><b>Business Titan</b><span>টিচার রিমাইন্ডার • অনলাইন শাখা</span></div>
+    <div class="headerbtns">
+      <button class="iconbtn" onclick="toggleTheme()" title="থিম">◐</button>
+    </div>
+  </div>
+</div>
+<div class="wrap">
+  <div class="tabs">
+    <button data-tab="home">🏠 হোম</button>
+    <button data-tab="classes">📖 ক্লাস</button>
+    <button data-tab="exams">📝 পরীক্ষা</button>
+    <button data-tab="teachers">👨‍🏫 শিক্ষক</button>
+    <button data-tab="settings">⚙️ সেটিংস</button>
+  </div>
+
+  <section id="view-home" class="view"></section>
+  <section id="view-classes" class="view"></section>
+  <section id="view-exams" class="view"></section>
+  <section id="view-teachers" class="view"></section>
+  <section id="view-settings" class="view"></section>
+</div>
+
+<div class="modalback" id="modalback"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- constants & seed data ---------- */
+const STORE_KEY='btReminder_v1';
+const BN='০১২৩৪৫৬৭৮৯';
+const MONTHS=['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+const DAYS=['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
+
+const TEACHER_SEED=[
+ {name:'জামাল উদ্দিন রাজু',subject:'বাংলা',rangeLabel:'লেকচার ১-১১',rangeFrom:1,rangeTo:11,phone:'01521220350',telegram:''},
+ {name:'মোমিনুল ইসলাম',subject:'ইংরেজি',rangeLabel:'লেকচার ১-১২',rangeFrom:1,rangeTo:12,phone:'01626908670',telegram:''},
+ {name:'শাওন আল ইমন',subject:'হিসাববিজ্ঞান',rangeLabel:'লেকচার ১-১১',rangeFrom:1,rangeTo:11,phone:'01521773120',telegram:''},
+ {name:'আল আমিন',subject:'ব্যবস্থাপনা',rangeLabel:'লেকচার ১-৪',rangeFrom:1,rangeTo:4,phone:'01921332219',telegram:''},
+ {name:'সাজিদ',subject:'ব্যবস্থাপনা',rangeLabel:'লেকচার ৫-৭',rangeFrom:5,rangeTo:7,phone:'01328620732',telegram:''},
+ {name:'তাওহিদুল ইসলাম',subject:'ফিন্যান্স',rangeLabel:'লেকচার ১-৭',rangeFrom:1,rangeTo:7,phone:'01319231710',telegram:''},
+ {name:'সাবিবর হোসেন',subject:'মার্কেটিং',rangeLabel:'লেকচার ১-৬',rangeFrom:1,rangeTo:6,phone:'01915896701',telegram:''}
+];
+
+// Raw source rows: [date, subject, lecture, examName] parsed from Online Class Routine (2026-27 session).
+// Split below into a pure class list (date/subject/lecture) and a pure exam list (date/subject/examName).
+const RAW_SEED=[
+["2026-08-22","ইংরেজি","১","Memory Test"],["2026-08-23","বাংলা","১","Memory Test"],["2026-08-24","হিসাববিজ্ঞান","১","Memory Test"],
+["2026-08-25","ব্যবস্থাপনা","১","Memory Test"],["2026-08-26","ফিন্যান্স","১","Memory Test"],["2026-08-27","মার্কেটিং","১","Memory Test"],
+["2026-08-29","ইংরেজি","২","CT-01"],["2026-08-30","বাংলা","২","CT-01"],["2026-08-31","হিসাববিজ্ঞান","২","CT-01"],
+["2026-09-01","ব্যবস্থাপনা","২","CT-01"],["2026-09-02","ফিন্যান্স","২","CT-01"],["2026-09-03","মার্কেটিং","২","CT-01"],
+["2026-09-05","ইংরেজি","৩","CT-02"],["2026-09-06","বাংলা","৩","CT-02"],["2026-09-07","হিসাববিজ্ঞান","৩","CT-02"],
+["2026-09-08","ব্যবস্থাপনা","৩","CT-02"],["2026-09-09","ফিন্যান্স","৩","CT-02"],["2026-09-10","মার্কেটিং","৩","CT-02"],
+["2026-09-12","ইংরেজি","৪","CT-03"],["2026-09-13","বাংলা","৪","CT-03"],["2026-09-14","হিসাববিজ্ঞান","৪","CT-03"],
+["2026-09-15","ব্যবস্থাপনা","৪","CT-03"],["2026-09-16","ফিন্যান্স","৪","CT-03"],["2026-09-17","মার্কেটিং","৪","CT-03"],
+["2026-09-19","ইংরেজি","Solve Class (১-৪)","CT-04"],["2026-09-20","বাংলা","Solve Class (১-৪)","CT-04"],
+["2026-09-21","হিসাববিজ্ঞান","Solve Class (১-৪)","CT-04"],["2026-09-22","ব্যবস্থাপনা","Solve Class (১-৪)","CT-04"],
+["2026-09-23","ফিন্যান্স","Solve Class (১-৪)","CT-04"],["2026-09-24","মার্কেটিং","Solve Class (১-৩)","CT-04"],
+["2026-09-26","ইংরেজি","৫","AT-01"],["2026-09-27","বাংলা","৫","AT-01"],["2026-09-28","হিসাববিজ্ঞান","৫","AT-01"],
+["2026-09-29","ব্যবস্থাপনা","৫","AT-01"],["2026-09-30","ফিন্যান্স","৫","AT-01"],["2026-10-01","মার্কেটিং","৫","AT-02"],
+["2026-10-03","ইংরেজি","৬","CT-05"],["2026-10-04","বাংলা","৬","CT-05"],["2026-10-05","হিসাববিজ্ঞান","৬","CT-05"],
+["2026-10-06","ব্যবস্থাপনা","৬","CT-05"],["2026-10-07","ফিন্যান্স","৬","CT-05"],["2026-10-08","মার্কেটিং","৬","CT-05"],
+["2026-10-10","ইংরেজি","৭","CT-06"],["2026-10-11","বাংলা","৭","CT-06"],["2026-10-12","হিসাববিজ্ঞান","৭","CT-06"],
+["2026-10-13","ব্যবস্থাপনা","৭","CT-06"],["2026-10-14","ফিন্যান্স","৭","CT-06"],
+["2026-10-17","ইংরেজি","৮","CT-07"],["2026-10-18","বাংলা","৮","CT-07"],["2026-10-19","হিসাববিজ্ঞান","৮","CT-07"],
+["2026-10-20","ফিন্যান্স","৮","CT-07"],
+["2026-10-24","ইংরেজি","Solve Class (৫-৮)","AT-02"],["2026-10-25","বাংলা","Solve Class (৫-৮)","AT-02"],
+["2026-10-26","হিসাববিজ্ঞান","Solve Class (৫-৮)","AT-02"],["2026-10-27","ব্যবস্থাপনা","Solve Class (৫-৭)","AT-02"],
+["2026-10-28","ফিন্যান্স","Solve Class (৫-৮)","AT-02"],["2026-10-29","মার্কেটিং","Solve Class (৪-৬)","AT-02"],
+["2026-10-31","ইংরেজি","৯","CT-08"],["2026-11-01","বাংলা","৯","CT-08"],["2026-11-02","হিসাববিজ্ঞান","৯","CT-08"],
+["2026-11-03","বাংলা","১০","CT-09"],["2026-11-04","ইংরেজি","১০","CT-09"],["2026-11-05","হিসাববিজ্ঞান","১০","CT-09"],
+["2026-11-07","ইংরেজি","১১","CT-10"],["2026-11-08","বাংলা","১১","CT-10"],["2026-11-09","হিসাববিজ্ঞান","১১","CT-10"],
+["2026-11-11","ইংরেজি","১২","CT-11"],
+["2026-11-14","ইংরেজি","Solve Class (৯-১১)","AT-03"],["2026-11-16","বাংলা","Solve Class (৯-১২)","AT-03"],
+["2026-11-18","হিসাববিজ্ঞান","Solve Class (৯-১১)","AT-03"],
+["2026-11-22","বাংলা","All Topic",""],["2026-11-24","ইংরেজি","All Topic",""],["2026-11-26","হিসাববিজ্ঞান","All Topic",""],
+["2026-11-28","ব্যবস্থাপনা","All Topic",""],["2026-11-30","ফিন্যান্স","All Topic",""],["2026-11-30","মার্কেটিং","All Topic",""],
+["2026-12-03","ইংরেজি","All Topic",""],["2026-12-05","বাংলা","All Topic",""],["2026-12-07","হিসাববিজ্ঞান","All Topic",""],
+["2026-12-09","ব্যবস্থাপনা","All Topic",""],["2026-12-10","ফিন্যান্স","All Topic",""],["2026-12-11","মার্কেটিং","All Topic",""]
+];
+const CLASS_SEED=RAW_SEED.map(r=>[r[0],r[1],r[2]]);
+const EXAM_SEED=RAW_SEED.filter(r=>r[3]).map(r=>[r[0],r[1],r[3]]);
+
+const DEFAULT_TEMPLATES={
+ today:"আসসালামু আলাইকুম {teacher} স্যার,\nআপনাকে অবহিত করা যাচ্ছে যে, আজ ({date}) Business Titan অনলাইন শাখায় আপনার {subject} বিষয়ে লেকচার {lecture} অনুষ্ঠিত হওয়ার কথা রয়েছে।\nঅনুগ্রহ করে নির্ধারিত সময়ে ক্লাসে যুক্ত হয়ে ক্লাসটি পরিচালনা করার জন্য বিনীত অনুরোধ রইলো।\n📍 ঠিকানাঃ {address}\n\nশুভেচ্ছান্তে,\n{org}",
+ tomorrow:"আসসালামু আলাইকুম {teacher} স্যার,\n📚 আগামীকালের ক্লাসের স্মরণবার্তা\nআগামীকাল ({date}) Business Titan অনলাইন শাখায় আপনার {subject} ক্লাসের লেকচার {lecture} নির্ধারিত রয়েছে।\n🕐 অনুগ্রহ করে নির্ধারিত সময়ের পূর্বেই প্রস্তুত থাকার জন্য বিনীত অনুরোধ রইলো।\n📍 ঠিকানাঃ {address}\n\nধন্যবাদান্তে,\n{org}",
+ upcoming:"আসসালামু আলাইকুম {teacher} স্যার,\n📅 ক্লাস শিডিউল স্মরণবার্তা\nআগামী {date} তারিখে Business Titan অনলাইন শাখায় আপনার {subject} ক্লাসের লেকচার {lecture} নির্ধারিত রয়েছে।\nঅনুগ্রহ করে নিজের সময়সূচিতে রেখে দেওয়ার অনুরোধ রইলো।\n📍 ঠিকানাঃ {address}\n\nধন্যবাদান্তে,\n{org}",
+ examToday:"আসসালামু আলাইকুম {teacher} স্যার,\nআপনাকে অবহিত করা যাচ্ছে যে, আজ ({date}) Business Titan অনলাইন শাখায় আপনার {subject} বিষয়ে {exam} পরীক্ষা অনুষ্ঠিত হওয়ার কথা রয়েছে।\nঅনুগ্রহ করে নির্ধারিত সময়ে উপস্থিত থেকে পরীক্ষাটি পরিচালনা/তত্ত্বাবধান করার জন্য বিনীত অনুরোধ রইলো।\n📍 ঠিকানাঃ {address}\n\nশুভেচ্ছান্তে,\n{org}",
+ examTomorrow:"আসসালামু আলাইকুম {teacher} স্যার,\n📝 আগামীকালের পরীক্ষার স্মরণবার্তা\nআগামীকাল ({date}) Business Titan অনলাইন শাখায় আপনার {subject} বিষয়ে {exam} পরীক্ষা নির্ধারিত রয়েছে।\n🕐 অনুগ্রহ করে নির্ধারিত সময়ের পূর্বেই প্রস্তুত থাকার জন্য বিনীত অনুরোধ রইলো।\n📍 ঠিকানাঃ {address}\n\nধন্যবাদান্তে,\n{org}",
+ examUpcoming:"আসসালামু আলাইকুম {teacher} স্যার,\n📅 পরীক্ষার শিডিউল স্মরণবার্তা\nআগামী {date} তারিখে Business Titan অনলাইন শাখায় আপনার {subject} বিষয়ে {exam} পরীক্ষা নির্ধারিত রয়েছে।\nঅনুগ্রহ করে নিজের সময়সূচিতে রেখে দেওয়ার অনুরোধ রইলো।\n📍 ঠিকানাঃ {address}\n\nধন্যবাদান্তে,\n{org}"
+};
+
+const TEMPLATE_VERSION=5;
+const OLD_DEFAULT_TEMPLATES={
+ today:"আসসালামু আলাইকুম {teacher},\n\nআজ ({date}) Business Titan অনলাইন শাখায় আপনার {subject} ক্লাস (লেকচার {lecture}) নির্ধারিত আছে।{note}\n\nসময়মতো ক্লাসে যুক্ত হওয়ার জন্য বিনীত অনুরোধ রইলো।\n\nধন্যবাদান্তে,\n{org}",
+ tomorrow:"আসসালামু আলাইকুম {teacher},\n\nআগামীকাল ({date}) Business Titan অনলাইন শাখায় আপনার {subject} ক্লাস (লেকচার {lecture}) নির্ধারিত আছে।{note}\n\nদয়া করে সময়মতো প্রস্তুত থাকবেন।\n\nধন্যবাদান্তে,\n{org}"
+};
+const V3_DEFAULT_TEMPLATES={
+ today:"আসসালামু আলাইকুম {teacher} স্যার,\nআপনাকে অবহিত করা যাচ্ছে যে, আজ ({date}) Business Titan অনলাইন শাখায় আপনার {subject} বিষয়ে লেকচার {lecture} অনুষ্ঠিত হওয়ার কথা রয়েছে।{note}\nঅনুগ্রহ করে নির্ধারিত সময়ে ক্লাসে যুক্ত হয়ে ক্লাসটি পরিচালনা করার জন্য বিনীত অনুরোধ রইলো।\n📍 ঠিকানাঃ {address}\n\nশুভেচ্ছান্তে,\n{org}",
+ tomorrow:"আসসালামু আলাইকুম {teacher} স্যার,\n📚 আগামীকালের ক্লাসের স্মরণবার্তা\nআগামীকাল ({date}) Business Titan অনলাইন শাখায় আপনার {subject} ক্লাসের লেকচার {lecture} নির্ধারিত রয়েছে।{note}\n🕐 অনুগ্রহ করে নির্ধারিত সময়ের পূর্বেই প্রস্তুত থাকার জন্য বিনীত অনুরোধ রইলো।\n📍 ঠিকানাঃ {address}\n\nধন্যবাদান্তে,\n{org}",
+ upcoming:"আসসালামু আলাইকুম {teacher} স্যার,\n📅 ক্লাস শিডিউল স্মরণবার্তা\nআগামী {date} তারিখে Business Titan অনলাইন শাখায় আপনার {subject} ক্লাসের লেকচার {lecture} নির্ধারিত রয়েছে।{note}\nঅনুগ্রহ করে নিজের সময়সূচিতে রেখে দেওয়ার অনুরোধ রইলো।\n📍 ঠিকানাঃ {address}\n\nধন্যবাদান্তে,\n{org}"
+};
+
+function seedData(){
+  return {
+    settings:{orgName:'Business Titan',branch:'অনলাইন শাখা',address:'ফার্মগেট, ঢাকা',theme:'light',templates:{...DEFAULT_TEMPLATES},templatesVersion:TEMPLATE_VERSION},
+    teachers:TEACHER_SEED.map((t,i)=>({id:'t'+(i+1),...t})),
+    classes:CLASS_SEED.map((c,i)=>({id:'c'+(i+1),date:c[0],subject:c[1],lecture:c[2]})),
+    exams:EXAM_SEED.map((e,i)=>({id:'e'+(i+1),date:e[0],subject:e[1],examName:e[2]})),
+    reminderLog:[]
+  };
+}
+
+/* ---------- storage ---------- */
+let data=load();
+function load(){
+  try{
+    const raw=JSON.parse(localStorage.getItem(STORE_KEY)||'null');
+    if(!raw) return seedData();
+    if(!raw.settings.templates) raw.settings.templates={...DEFAULT_TEMPLATES};
+    if(!raw.settings.address) raw.settings.address='ফার্মগেট, ঢাকা';
+    if(!raw.exams) raw.exams=[];
+    if((raw.settings.templatesVersion||1)<TEMPLATE_VERSION){
+      const t=raw.settings.templates;
+      const unmodified=(cur,olds)=>!cur||olds.some(o=>cur===o);
+      if(unmodified(t.today,[OLD_DEFAULT_TEMPLATES.today,V3_DEFAULT_TEMPLATES.today])) t.today=DEFAULT_TEMPLATES.today;
+      if(unmodified(t.tomorrow,[OLD_DEFAULT_TEMPLATES.tomorrow,V3_DEFAULT_TEMPLATES.tomorrow])) t.tomorrow=DEFAULT_TEMPLATES.tomorrow;
+      if(unmodified(t.upcoming,[V3_DEFAULT_TEMPLATES.upcoming])) t.upcoming=DEFAULT_TEMPLATES.upcoming;
+      if(!t.examToday) t.examToday=DEFAULT_TEMPLATES.examToday;
+      if(!t.examTomorrow) t.examTomorrow=DEFAULT_TEMPLATES.examTomorrow;
+      if(!t.examUpcoming) t.examUpcoming=DEFAULT_TEMPLATES.examUpcoming;
+      raw.settings.templatesVersion=TEMPLATE_VERSION;
+    }
+    return raw;
+  }catch(e){return seedData();}
+}
+function save(){localStorage.setItem(STORE_KEY,JSON.stringify(data));}
+function uid(p){return p+'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+
+/* ---------- helpers ---------- */
+function bn(n){return String(n).replace(/[0-9]/g,d=>BN[d]);}
+function toEnDigits(s){return String(s??'').replace(/[০-৯]/g,d=>String(BN.indexOf(d)));}
+function firstNumber(s){const m=toEnDigits(s).match(/\d+/);return m?Number(m[0]):NaN;}
+function esc(s){return String(s??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));}
+function pad2(n){return String(n).padStart(2,'0');}
+function isoOf(d){return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;}
+function todayISO(){return isoOf(new Date());}
+function tomorrowISO(){const d=new Date();d.setDate(d.getDate()+1);return isoOf(d);}
+function formatBn(iso){const d=new Date(iso+'T00:00:00');return `${bn(d.getDate())} ${MONTHS[d.getMonth()]}, ${DAYS[d.getDay()]}`;}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),2200);}
+
+function subjectsList(){return [...new Set(data.teachers.map(t=>t.subject))];}
+function teachersFor(subject){return data.teachers.filter(t=>t.subject===subject);}
+function suggestTeacher(subject,lecture){
+  const cands=teachersFor(subject);
+  if(cands.length===0) return null;
+  if(cands.length===1) return cands[0];
+  const num=firstNumber(lecture);
+  if(!isNaN(num)){
+    const m=cands.find(t=>num>=t.rangeFrom&&num<=t.rangeTo);
+    if(m) return m;
+  }
+  return cands[0];
+}
+function classesOn(iso){return data.classes.filter(c=>c.date===iso).sort((a,b)=>a.subject.localeCompare(b.subject,'bn'));}
+function examsOn(iso){return data.exams.filter(e=>e.date===iso).sort((a,b)=>a.subject.localeCompare(b.subject,'bn'));}
+function upcomingGroupsFor(listFn,days){
+  const start=new Date();start.setDate(start.getDate()+1);
+  const groups=[];
+  for(let i=0;i<days;i++){
+    const d=new Date(start);d.setDate(start.getDate()+i);
+    const iso=isoOf(d);
+    const list=listFn(iso);
+    if(list.length) groups.push({date:iso,list});
+  }
+  return groups;
+}
+function loggedToday(entryId){
+  const t=todayISO();
+  return data.reminderLog.find(l=>l.entryId===entryId && l.sentAt.slice(0,10)===t);
+}
+
+function waLink(phone,text){
+  let p=(phone||'').replace(/\D/g,'');
+  if(!p) return null;
+  if(p.startsWith('0')) p='880'+p.slice(1);
+  else if(!p.startsWith('880')) p='880'+p;
+  return `https://wa.me/${p}?text=${encodeURIComponent(text)}`;
+}
+function phoneDigits(phone){
+  let p=(phone||'').replace(/\D/g,'');
+  if(!p) return '';
+  if(p.startsWith('0')) p='880'+p.slice(1);
+  else if(!p.startsWith('880')) p='880'+p;
+  return p;
+}
+function tgAppLink(username,phone,text){
+  const u=(username||'').replace('@','').trim();
+  if(u) return `tg://resolve?domain=${u}&text=${encodeURIComponent(text)}`;
+  const p=phoneDigits(phone);
+  if(p) return `tg://resolve?phone=${p}&text=${encodeURIComponent(text)}`;
+  return `tg://msg_url?url=&text=${encodeURIComponent(text)}`;
+}
+function tgWebLink(username,phone,text){
+  const u=(username||'').replace('@','').trim();
+  if(u) return `https://t.me/${u}?text=${encodeURIComponent(text)}`;
+  return `https://t.me/share/url?url=&text=${encodeURIComponent(text)}`;
+}
+function fillTemplate(tpl,ctx){return tpl.replace(/\{(\w+)\}/g,(m,k)=>ctx[k]!==undefined?ctx[k]:m);}
+function buildMessage(kind,entry,entryType,teacherName){
+  const templateKey = entryType==='exam' ? {today:'examToday',tomorrow:'examTomorrow',upcoming:'examUpcoming'}[kind] : kind;
+  const tpl=data.settings.templates[templateKey]||DEFAULT_TEMPLATES[templateKey];
+  const ctx={
+    teacher: teacherName || '',
+    subject: entry.subject,
+    date: formatBn(entry.date),
+    address: data.settings.address || '',
+    org: data.settings.orgName
+  };
+  if(entryType==='exam') ctx.exam=entry.examName; else ctx.lecture=entry.lecture;
+  const msg=fillTemplate(tpl,ctx);
+  return msg.replace(/[ \t]{2,}/g,' ').replace(/^ +| +$/gm,'');
+}
+
+/* ---------- tabs ---------- */
+let activeTab='home';
+document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{activeTab=b.dataset.tab;renderAll();}));
+
+function renderAll(){
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===activeTab));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+activeTab).classList.add('active');
+  if(activeTab==='home') renderHome();
+  if(activeTab==='classes') renderClasses();
+  if(activeTab==='exams') renderExams();
+  if(activeTab==='teachers') renderTeachers();
+  if(activeTab==='settings') renderSettings();
+  document.body.classList.toggle('dark', data.settings.theme==='dark');
+}
+
+/* ---------- shared entry card (used by both classes & exams on Home) ---------- */
+function entryCardHtml(entry, kind, entryType){
+  const lectureForSuggest = entryType==='exam' ? '' : entry.lecture;
+  const sug=suggestTeacher(entry.subject,lectureForSuggest);
+  const opts=data.teachers.filter(t=>t.subject===entry.subject);
+  const others=data.teachers.filter(t=>t.subject!==entry.subject);
+  const selId='sel_'+entry.id+'_'+kind;
+  const logged=loggedToday(entry.id);
+  const subtitle = entryType==='exam' ? `📝 ${esc(entry.examName)}` : `লেকচার ${esc(entry.lecture)}`;
+  return `<div class="entrycard ${entryType==='exam'?'exam':''}">
+    <div class="top">
+      <div><div class="subj">${esc(entry.subject)}</div><div class="lec">${subtitle}</div>
+      <span class="typechip ${entryType}">${entryType==='exam'?'পরীক্ষা':'ক্লাস'}</span></div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <span class="datepill">${formatBn(entry.date)}</span>
+        ${logged?`<span class="sentbadge">পাঠানো হয়েছে ✓</span>`:''}
+      </div>
+    </div>
+    <div class="teacherrow">
+      <select id="${selId}">
+        <option value="">— শিক্ষক নির্বাচন করুন —</option>
+        ${opts.map(t=>`<option value="${t.id}" ${sug&&sug.id===t.id?'selected':''}>${esc(t.name)} (${esc(t.rangeLabel)})</option>`).join('')}
+        ${others.length?`<option disabled>──────</option>`+others.map(t=>`<option value="${t.id}">${esc(t.name)} — ${esc(t.subject)}</option>`).join(''):''}
+      </select>
+    </div>
+    <div class="actions">
+      <button class="btn wa" onclick="sendReminder('${entry.id}','${entryType}','${kind}','${selId}','wa')">🟢 WhatsApp</button>
+      <button class="btn tg" onclick="sendReminder('${entry.id}','${entryType}','${kind}','${selId}','tgapp')">🔵 Telegram অ্যাপ</button>
+      <button class="btn tg" onclick="sendReminder('${entry.id}','${entryType}','${kind}','${selId}','tgweb')">🌐 Telegram ওয়েব</button>
+      <button class="btn copy" onclick="sendReminder('${entry.id}','${entryType}','${kind}','${selId}','copy')">⧉ কপি</button>
+    </div>
+  </div>`;
+}
+function sendReminder(entryId,entryType,kind,selId,mode){
+  const entry=(entryType==='exam'?data.exams:data.classes).find(x=>x.id===entryId);
+  if(!entry) return;
+  const teacherId=document.getElementById(selId).value;
+  const teacher=data.teachers.find(t=>t.id===teacherId);
+  const msg=buildMessage(kind,entry,entryType,teacher?teacher.name:null);
+  if(mode==='wa'){
+    if(!teacher||!teacher.phone){toast('এই শিক্ষকের মোবাইল নম্বর নেই — সেটিংস থেকে যোগ করুন');return;}
+    window.open(waLink(teacher.phone,msg),'_blank');
+    logSent(entryId,teacherId,'whatsapp');
+  }else if(mode==='tgapp'||mode==='tgweb'){
+    navigator.clipboard.writeText(msg).catch(()=>{});
+    const username=teacher?teacher.telegram:'';
+    const phone=teacher?teacher.phone:'';
+    if(mode==='tgapp'){
+      window.location.href=tgAppLink(username,phone,msg);
+      toast(username?'মেসেজ কপি হয়েছে — Telegram অ্যাপ খোলা হচ্ছে':'মেসেজ কপি হয়েছে — নম্বর দিয়ে চেষ্টা করা হচ্ছে (Telegram Desktop থাকতে হবে)');
+    }else{
+      const link=tgWebLink(username,phone,msg);
+      window.open(link,'_blank');
+      toast(username?'মেসেজ কপি হয়েছে — Telegram Web খোলা হচ্ছে':'ইউজারনেম নেই বলে সরাসরি চ্যাট খোলা যায়নি — মেসেজ কপি হয়েছে, চ্যাট বেছে পেস্ট করুন');
+    }
+    logSent(entryId,teacherId,mode==='tgapp'?'telegram-app':'telegram-web');
+  }else{
+    navigator.clipboard.writeText(msg).then(()=>toast('মেসেজ কপি হয়েছে')).catch(()=>toast('কপি করা যায়নি'));
+    logSent(entryId,teacherId,'copy');
+  }
+  renderAll();
+}
+function logSent(entryId,teacherId,mode){
+  data.reminderLog.push({entryId,teacherId:teacherId||'',mode,sentAt:new Date().toISOString()});
+  if(data.reminderLog.length>500) data.reminderLog=data.reminderLog.slice(-500);
+  save();
+}
+
+/* ---------- HOME ---------- */
+function renderHome(){
+  const t=todayISO(), tm=tomorrowISO();
+  const todayClasses=classesOn(t), todayExams=examsOn(t);
+  const classGroups=upcomingGroupsFor(classesOn,10);
+  const examGroups=upcomingGroupsFor(examsOn,10);
+  const upcomingClassCount=classGroups.reduce((s,g)=>s+g.list.length,0);
+  const upcomingExamCount=examGroups.reduce((s,g)=>s+g.list.length,0);
+  document.getElementById('view-home').innerHTML=`
+    <div class="grid g4">
+      <div class="card stat"><div class="num">${bn(todayClasses.length)}</div><div class="lbl">আজকের ক্লাস</div></div>
+      <div class="card stat"><div class="num">${bn(todayExams.length)}</div><div class="lbl">আজকের পরীক্ষা</div></div>
+      <div class="card stat"><div class="num">${bn(upcomingClassCount)}</div><div class="lbl">আসছে ১০ দিনের ক্লাস</div></div>
+      <div class="card stat"><div class="num">${bn(upcomingExamCount)}</div><div class="lbl">আসছে ১০ দিনের পরীক্ষা</div></div>
+    </div>
+
+    <div class="section-title"><h2>📖 আজকের ক্লাস</h2><span class="cnt">${formatBn(t)}</span></div>
+    ${todayClasses.length?`<div class="grid">${todayClasses.map(c=>entryCardHtml(c,'today','class')).join('')}</div>`:`<div class="empty">আজ কোনো ক্লাস তালিকাভুক্ত নেই।</div>`}
+
+    <div class="section-title"><h2>📝 আজকের পরীক্ষা</h2><span class="cnt">${formatBn(t)}</span></div>
+    ${todayExams.length?`<div class="grid">${todayExams.map(e=>entryCardHtml(e,'today','exam')).join('')}</div>`:`<div class="empty">আজ কোনো পরীক্ষা তালিকাভুক্ত নেই।</div>`}
+
+    <div class="section-title"><h2>📖 আসন্ন ক্লাস</h2><span class="cnt">পরবর্তী ১০ দিন</span></div>
+    ${classGroups.length? classGroups.map(g=>`
+      <div style="margin:16px 0 8px;font-weight:700;font-size:13px;color:var(--muted)">${formatBn(g.date)}${g.date===tm?' • আগামীকাল':''}</div>
+      <div class="grid">${g.list.map(c=>entryCardHtml(c, g.date===tm?'tomorrow':'upcoming', 'class')).join('')}</div>
+    `).join('') : `<div class="empty">আগামী ১০ দিনে কোনো ক্লাস তালিকাভুক্ত নেই।</div>`}
+
+    <div class="section-title"><h2>📝 আসন্ন পরীক্ষা</h2><span class="cnt">পরবর্তী ১০ দিন</span></div>
+    ${examGroups.length? examGroups.map(g=>`
+      <div style="margin:16px 0 8px;font-weight:700;font-size:13px;color:var(--muted)">${formatBn(g.date)}${g.date===tm?' • আগামীকাল':''}</div>
+      <div class="grid">${g.list.map(e=>entryCardHtml(e, g.date===tm?'tomorrow':'upcoming', 'exam')).join('')}</div>
+    `).join('') : `<div class="empty">আগামী ১০ দিনে কোনো পরীক্ষা তালিকাভুক্ত নেই।</div>`}
+  `;
+}
+
+/* ---------- CLASSES (management tab) ---------- */
+let classFilter={q:'',subject:'',month:''};
+function renderClasses(){
+  const months=[...new Set(data.classes.map(c=>c.date.slice(0,7)))].sort();
+  let rows=data.classes.slice().sort((a,b)=>a.date.localeCompare(b.date));
+  if(classFilter.subject) rows=rows.filter(c=>c.subject===classFilter.subject);
+  if(classFilter.month) rows=rows.filter(c=>c.date.slice(0,7)===classFilter.month);
+  if(classFilter.q) rows=rows.filter(c=>c.subject.toLowerCase().includes(classFilter.q.toLowerCase()));
+  document.getElementById('view-classes').innerHTML=`
+    <div class="card">
+      <div class="toolbar">
+        <input class="grow" id="cf-q" placeholder="খুঁজুন (বিষয়)" value="${esc(classFilter.q)}">
+        <select id="cf-subject"><option value="">সব বিষয়</option>${subjectsList().map(s=>`<option ${classFilter.subject===s?'selected':''}>${esc(s)}</option>`).join('')}</select>
+        <select id="cf-month"><option value="">সব মাস</option>${months.map(m=>`<option value="${m}" ${classFilter.month===m?'selected':''}>${monthLabel(m)}</option>`).join('')}</select>
+        <button class="btn primary" onclick="openClassModal()">＋ ক্লাস যোগ</button>
+        <button class="btn soft" onclick="openImportModal('class')">⇩ বাল্ক ইম্পোর্ট</button>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>তারিখ</th><th>বিষয়</th><th>লেকচার</th><th></th></tr></thead>
+        <tbody>${rows.length?rows.map(c=>`<tr>
+          <td>${formatBn(c.date)}</td><td>${esc(c.subject)}</td><td>${esc(c.lecture)}</td>
+          <td><button class="rowbtn" onclick="openClassModal('${c.id}')">✎</button><button class="rowbtn" onclick="deleteClass('${c.id}')">🗑</button></td>
+        </tr>`).join(''):`<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">কোনো ক্লাস পাওয়া যায়নি</td></tr>`}</tbody>
+      </table></div>
+    </div>`;
+  document.getElementById('cf-q').oninput=e=>{classFilter.q=e.target.value;renderClasses();};
+  document.getElementById('cf-subject').onchange=e=>{classFilter.subject=e.target.value;renderClasses();};
+  document.getElementById('cf-month').onchange=e=>{classFilter.month=e.target.value;renderClasses();};
+}
+function monthLabel(m){const [y,mo]=m.split('-').map(Number);return `${MONTHS[mo-1]} ${bn(y)}`;}
+
+function openClassModal(id){
+  const cls=id?data.classes.find(c=>c.id===id):null;
+  document.getElementById('modal').innerHTML=`
+    <h3>${cls?'ক্লাস সম্পাদনা':'নতুন ক্লাস যোগ করুন'}</h3>
+    <div class="field"><label>তারিখ</label><input type="date" id="m-date" value="${cls?cls.date:todayISO()}"></div>
+    <div class="field"><label>বিষয়</label><input list="subjlist" id="m-subject" value="${cls?esc(cls.subject):''}" placeholder="যেমনঃ ইংরেজি"><datalist id="subjlist">${subjectsList().map(s=>`<option value="${esc(s)}">`).join('')}</datalist></div>
+    <div class="field"><label>লেকচার</label><input id="m-lecture" value="${cls?esc(cls.lecture):''}" placeholder="যেমনঃ ৫ বা Solve Class (১-৪)"></div>
+    <div class="modalactions"><button class="btn soft" onclick="closeModal()">বাতিল</button><button class="btn primary" onclick="saveClass(${cls?`'${cls.id}'`:'null'})">সংরক্ষণ করুন</button></div>`;
+  document.getElementById('modalback').classList.add('open');
+}
+function saveClass(id){
+  const date=document.getElementById('m-date').value;
+  const subject=document.getElementById('m-subject').value.trim();
+  const lecture=document.getElementById('m-lecture').value.trim();
+  if(!date||!subject){toast('তারিখ ও বিষয় আবশ্যক');return;}
+  if(id){
+    const c=data.classes.find(c=>c.id===id);
+    Object.assign(c,{date,subject,lecture});
+  }else{
+    data.classes.push({id:uid('c'),date,subject,lecture});
+  }
+  save();closeModal();renderClasses();toast('সংরক্ষিত হয়েছে');
+}
+function deleteClass(id){
+  if(!confirm('এই ক্লাসটি মুছে ফেলবেন?'))return;
+  data.classes=data.classes.filter(c=>c.id!==id);save();renderClasses();toast('মুছে ফেলা হয়েছে');
+}
+
+/* ---------- EXAMS (management tab) ---------- */
+let examFilter={q:'',subject:'',month:''};
+function renderExams(){
+  const months=[...new Set(data.exams.map(e=>e.date.slice(0,7)))].sort();
+  let rows=data.exams.slice().sort((a,b)=>a.date.localeCompare(b.date));
+  if(examFilter.subject) rows=rows.filter(e=>e.subject===examFilter.subject);
+  if(examFilter.month) rows=rows.filter(e=>e.date.slice(0,7)===examFilter.month);
+  if(examFilter.q) rows=rows.filter(e=>(e.subject+e.examName).toLowerCase().includes(examFilter.q.toLowerCase()));
+  document.getElementById('view-exams').innerHTML=`
+    <div class="card">
+      <div class="toolbar">
+        <input class="grow" id="ef-q" placeholder="খুঁজুন (বিষয়/পরীক্ষার নাম)" value="${esc(examFilter.q)}">
+        <select id="ef-subject"><option value="">সব বিষয়</option>${subjectsList().map(s=>`<option ${examFilter.subject===s?'selected':''}>${esc(s)}</option>`).join('')}</select>
+        <select id="ef-month"><option value="">সব মাস</option>${months.map(m=>`<option value="${m}" ${examFilter.month===m?'selected':''}>${monthLabel(m)}</option>`).join('')}</select>
+        <button class="btn primary" onclick="openExamModal()">＋ পরীক্ষা যোগ</button>
+        <button class="btn soft" onclick="openImportModal('exam')">⇩ বাল্ক ইম্পোর্ট</button>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>তারিখ</th><th>বিষয়</th><th>পরীক্ষার নাম</th><th></th></tr></thead>
+        <tbody>${rows.length?rows.map(e=>`<tr>
+          <td>${formatBn(e.date)}</td><td>${esc(e.subject)}</td><td>${esc(e.examName)}</td>
+          <td><button class="rowbtn" onclick="openExamModal('${e.id}')">✎</button><button class="rowbtn" onclick="deleteExam('${e.id}')">🗑</button></td>
+        </tr>`).join(''):`<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">কোনো পরীক্ষা পাওয়া যায়নি</td></tr>`}</tbody>
+      </table></div>
+    </div>`;
+  document.getElementById('ef-q').oninput=e=>{examFilter.q=e.target.value;renderExams();};
+  document.getElementById('ef-subject').onchange=e=>{examFilter.subject=e.target.value;renderExams();};
+  document.getElementById('ef-month').onchange=e=>{examFilter.month=e.target.value;renderExams();};
+}
+function openExamModal(id){
+  const ex=id?data.exams.find(e=>e.id===id):null;
+  document.getElementById('modal').innerHTML=`
+    <h3>${ex?'পরীক্ষা সম্পাদনা':'নতুন পরীক্ষা যোগ করুন'}</h3>
+    <div class="field"><label>তারিখ</label><input type="date" id="m-edate" value="${ex?ex.date:todayISO()}"></div>
+    <div class="field"><label>বিষয়</label><input list="subjlist3" id="m-esubject" value="${ex?esc(ex.subject):''}" placeholder="যেমনঃ ইংরেজি"><datalist id="subjlist3">${subjectsList().map(s=>`<option value="${esc(s)}">`).join('')}</datalist></div>
+    <div class="field"><label>পরীক্ষার নাম</label><input id="m-examname" value="${ex?esc(ex.examName):''}" placeholder="যেমনঃ CT-01, Memory Test, AT-02"></div>
+    <div class="modalactions"><button class="btn soft" onclick="closeModal()">বাতিল</button><button class="btn primary" onclick="saveExam(${ex?`'${ex.id}'`:'null'})">সংরক্ষণ করুন</button></div>`;
+  document.getElementById('modalback').classList.add('open');
+}
+function saveExam(id){
+  const date=document.getElementById('m-edate').value;
+  const subject=document.getElementById('m-esubject').value.trim();
+  const examName=document.getElementById('m-examname').value.trim();
+  if(!date||!subject||!examName){toast('তারিখ, বিষয় ও পরীক্ষার নাম আবশ্যক');return;}
+  if(id){
+    const e=data.exams.find(e=>e.id===id);
+    Object.assign(e,{date,subject,examName});
+  }else{
+    data.exams.push({id:uid('e'),date,subject,examName});
+  }
+  save();closeModal();renderExams();toast('সংরক্ষিত হয়েছে');
+}
+function deleteExam(id){
+  if(!confirm('এই পরীক্ষাটি মুছে ফেলবেন?'))return;
+  data.exams=data.exams.filter(e=>e.id!==id);save();renderExams();toast('মুছে ফেলা হয়েছে');
+}
+
+/* ---------- shared bulk import (classes or exams) ---------- */
+let importKind='class';
+function openImportModal(kind){
+  importKind=kind;
+  const isExam=kind==='exam';
+  document.getElementById('modal').innerHTML=`
+    <h3>বাল্ক ইম্পোর্ট — ${isExam?'পরীক্ষা':'ক্লাস'}</h3>
+    <p class="hint">প্রতি লাইনে একটি ${isExam?'পরীক্ষা':'ক্লাস'}, কমা দিয়ে আলাদা করুনঃ<br>
+    <b>${isExam?'তারিখ(YYYY-MM-DD), বিষয়, পরীক্ষার নাম':'তারিখ(YYYY-MM-DD), বিষয়, লেকচার'}</b><br>
+    উদাহরণঃ ${isExam?'2026-08-29, ইংরেজি, CT-01':'2026-08-22, ইংরেজি, ১'}</p>
+    <button class="btn soft" style="margin-bottom:12px" onclick="downloadImportDemo('${kind}')">📄 ডেমো ফাইল ডাউনলোড</button>
+    <div class="field"><textarea id="m-bulk" placeholder="${isExam?'2026-08-29, ইংরেজি, CT-01':'2026-08-22, ইংরেজি, ১'}"></textarea></div>
+    <div class="modalactions"><button class="btn soft" onclick="closeModal()">বাতিল</button><button class="btn primary" onclick="importBulk()">ইম্পোর্ট করুন</button></div>`;
+  document.getElementById('modalback').classList.add('open');
+}
+function downloadImportDemo(kind){
+  const demo = kind==='exam' ? [
+    '2026-08-22, ইংরেজি, Memory Test',
+    '2026-08-29, বাংলা, CT-01',
+    '2026-09-19, হিসাববিজ্ঞান, CT-04'
+  ] : [
+    '2026-08-22, ইংরেজি, ১',
+    '2026-08-23, বাংলা, ২',
+    '2026-08-24, হিসাববিজ্ঞান, Solve Class (১-৪)'
+  ];
+  const blob=new Blob([demo.join('\n')],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`bt-${kind}-import-demo.csv`;
+  a.click();
+}
+function importBulk(){
+  const lines=document.getElementById('m-bulk').value.split('\n').map(l=>l.trim()).filter(Boolean);
+  let added=0,skipped=0;
+  if(importKind==='exam'){
+    lines.forEach(line=>{
+      const [date,subject,examName]=line.split(',').map(p=>p.trim());
+      if(!date||!subject||!examName||!/^\d{4}-\d{2}-\d{2}$/.test(date)){skipped++;return;}
+      data.exams.push({id:uid('e'),date,subject,examName});
+      added++;
+    });
+    save();closeModal();renderExams();
+  }else{
+    lines.forEach(line=>{
+      const [date,subject,lecture]=line.split(',').map(p=>p.trim());
+      if(!date||!subject||!/^\d{4}-\d{2}-\d{2}$/.test(date)){skipped++;return;}
+      data.classes.push({id:uid('c'),date,subject,lecture:lecture||''});
+      added++;
+    });
+    save();closeModal();renderClasses();
+  }
+  toast(`${bn(added)}টি যোগ হয়েছে${skipped?` • ${bn(skipped)}টি লাইন বাদ গেছে`:''}`);
+}
+
+/* ---------- TEACHERS ---------- */
+function renderTeachers(){
+  document.getElementById('view-teachers').innerHTML=`
+    <div class="toolbar"><div class="grow"></div><button class="btn primary" onclick="openTeacherModal()">＋ শিক্ষক যোগ</button></div>
+    <div class="grid">${data.teachers.map(t=>`
+      <div class="card teachercard">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="avatar">${esc(t.name.slice(0,1))}</div>
+          <div><b>${esc(t.name)}</b><div class="sub">${esc(t.subject)} • ${esc(t.rangeLabel)}</div>
+          <div class="sub">📞 ${esc(t.phone||'—')} ${t.telegram?`• Telegram: @${esc(t.telegram)}`:''}</div></div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="rowbtn" onclick="openTeacherModal('${t.id}')">✎</button>
+          <button class="rowbtn" onclick="deleteTeacher('${t.id}')">🗑</button>
+        </div>
+      </div>`).join('')}
+    </div>`;
+}
+function openTeacherModal(id){
+  const t=id?data.teachers.find(t=>t.id===id):null;
+  document.getElementById('modal').innerHTML=`
+    <h3>${t?'শিক্ষক সম্পাদনা':'নতুন শিক্ষক যোগ করুন'}</h3>
+    <div class="field"><label>নাম</label><input id="m-name" value="${t?esc(t.name):''}"></div>
+    <div class="field"><label>বিষয়</label><input list="subjlist2" id="m-subj" value="${t?esc(t.subject):''}"><datalist id="subjlist2">${subjectsList().map(s=>`<option value="${esc(s)}">`).join('')}</datalist></div>
+    <div class="field"><label>লেকচার রেঞ্জ (লেবেল)</label><input id="m-range" value="${t?esc(t.rangeLabel):''}" placeholder="যেমনঃ লেকচার ১-১১"></div>
+    <div class="grid g2">
+      <div class="field"><label>রেঞ্জ শুরু (নাম্বার)</label><input type="number" id="m-rf" value="${t?t.rangeFrom:1}"></div>
+      <div class="field"><label>রেঞ্জ শেষ (নাম্বার)</label><input type="number" id="m-rt" value="${t?t.rangeTo:20}"></div>
+    </div>
+    <div class="field"><label>মোবাইল নম্বর (WhatsApp)</label><input id="m-phone" value="${t?esc(t.phone):''}" placeholder="01XXXXXXXXX"></div>
+    <div class="field"><label>Telegram ইউজারনেম (ঐচ্ছিক)</label><input id="m-tg" value="${t?esc(t.telegram):''}" placeholder="@ ছাড়া লিখুন"></div>
+    <div class="modalactions"><button class="btn soft" onclick="closeModal()">বাতিল</button><button class="btn primary" onclick="saveTeacher(${t?`'${t.id}'`:'null'})">সংরক্ষণ করুন</button></div>`;
+  document.getElementById('modalback').classList.add('open');
+}
+function saveTeacher(id){
+  const name=document.getElementById('m-name').value.trim();
+  const subject=document.getElementById('m-subj').value.trim();
+  const rangeLabel=document.getElementById('m-range').value.trim();
+  const rangeFrom=Number(document.getElementById('m-rf').value)||1;
+  const rangeTo=Number(document.getElementById('m-rt').value)||99;
+  const phone=document.getElementById('m-phone').value.trim();
+  const telegram=document.getElementById('m-tg').value.trim().replace('@','');
+  if(!name||!subject){toast('নাম ও বিষয় আবশ্যক');return;}
+  if(id){Object.assign(data.teachers.find(t=>t.id===id),{name,subject,rangeLabel,rangeFrom,rangeTo,phone,telegram});}
+  else{data.teachers.push({id:uid('t'),name,subject,rangeLabel,rangeFrom,rangeTo,phone,telegram});}
+  save();closeModal();renderTeachers();toast('সংরক্ষিত হয়েছে');
+}
+function deleteTeacher(id){
+  if(!confirm('এই শিক্ষককে মুছে ফেলবেন?'))return;
+  data.teachers=data.teachers.filter(t=>t.id!==id);save();renderTeachers();toast('মুছে ফেলা হয়েছে');
+}
+
+/* ---------- SETTINGS ---------- */
+function renderSettings(){
+  const s=data.settings;
+  document.getElementById('view-settings').innerHTML=`
+    <div class="card">
+      <h3 style="margin-bottom:12px">প্রতিষ্ঠানের তথ্য</h3>
+      <div class="grid g2">
+        <div class="field"><label>প্রতিষ্ঠানের নাম</label><input id="s-org" value="${esc(s.orgName)}"></div>
+        <div class="field"><label>শাখা</label><input id="s-branch" value="${esc(s.branch)}"></div>
+      </div>
+      <div class="field"><label>ঠিকানা (রিমাইন্ডার মেসেজে দেখাবে)</label><input id="s-address" value="${esc(s.address||'')}" placeholder="যেমনঃ ফার্মগেট, ঢাকা"></div>
+      <div class="toggle"><span>ডার্ক মোড</span><div class="switch ${s.theme==='dark'?'on':''}" id="s-theme-switch" onclick="toggleTheme()"><i></i></div></div>
+      <button class="btn primary" onclick="saveOrgSettings()">সংরক্ষণ করুন</button>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <div class="subhead">📖 ক্লাস রিমাইন্ডার টেমপ্লেট</div>
+      <p class="hint">ব্যবহারযোগ্য ভ্যারিয়েবলঃ {teacher} {subject} {lecture} {date} {address} {org}</p>
+      <div class="field"><label>আজকের ক্লাসের টেমপ্লেট</label><textarea id="s-tpl-today">${esc(s.templates.today)}</textarea></div>
+      <div class="field"><label>আগামীকালের ক্লাসের টেমপ্লেট</label><textarea id="s-tpl-tomorrow">${esc(s.templates.tomorrow)}</textarea></div>
+      <div class="field"><label>আসন্ন (পরবর্তী দিনগুলোর) ক্লাসের টেমপ্লেট</label><textarea id="s-tpl-upcoming">${esc(s.templates.upcoming||'')}</textarea></div>
+      <hr class="divider">
+      <div class="subhead">📝 পরীক্ষা রিমাইন্ডার টেমপ্লেট</div>
+      <p class="hint">ব্যবহারযোগ্য ভ্যারিয়েবলঃ {teacher} {subject} {exam} {date} {address} {org}</p>
+      <div class="field"><label>আজকের পরীক্ষার টেমপ্লেট</label><textarea id="s-tpl-examtoday">${esc(s.templates.examToday||'')}</textarea></div>
+      <div class="field"><label>আগামীকালের পরীক্ষার টেমপ্লেট</label><textarea id="s-tpl-examtomorrow">${esc(s.templates.examTomorrow||'')}</textarea></div>
+      <div class="field"><label>আসন্ন পরীক্ষার টেমপ্লেট</label><textarea id="s-tpl-examupcoming">${esc(s.templates.examUpcoming||'')}</textarea></div>
+      <button class="btn primary" onclick="saveTemplates()">টেমপ্লেট সংরক্ষণ করুন</button>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3 style="margin-bottom:12px">ব্যাকআপ ও রিসেট</h3>
+      <div class="actions" style="padding-left:0">
+        <button class="btn soft" onclick="exportData()">⇩ ব্যাকআপ ডাউনলোড (JSON)</button>
+        <label class="btn soft" style="cursor:pointer">⇧ ব্যাকআপ পুনরুদ্ধার<input type="file" accept=".json" style="display:none" onchange="importData(event)"></label>
+        <button class="btn red" onclick="resetData()">রিসেট (ডিফল্ট ডেটা)</button>
+      </div>
+    </div>
+  `;
+}
+function saveOrgSettings(){
+  data.settings.orgName=document.getElementById('s-org').value.trim()||'Business Titan';
+  data.settings.branch=document.getElementById('s-branch').value.trim();
+  data.settings.address=document.getElementById('s-address').value.trim();
+  save();toast('সংরক্ষিত হয়েছে');
+}
+function saveTemplates(){
+  data.settings.templates.today=document.getElementById('s-tpl-today').value;
+  data.settings.templates.tomorrow=document.getElementById('s-tpl-tomorrow').value;
+  data.settings.templates.upcoming=document.getElementById('s-tpl-upcoming').value;
+  data.settings.templates.examToday=document.getElementById('s-tpl-examtoday').value;
+  data.settings.templates.examTomorrow=document.getElementById('s-tpl-examtomorrow').value;
+  data.settings.templates.examUpcoming=document.getElementById('s-tpl-examupcoming').value;
+  save();toast('টেমপ্লেট সংরক্ষিত হয়েছে');
+}
+function toggleTheme(){
+  data.settings.theme=data.settings.theme==='dark'?'light':'dark';
+  save();renderAll();
+}
+function exportData(){
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`bt-reminder-backup-${todayISO()}.json`;
+  a.click();
+}
+function importData(e){
+  const file=e.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const parsed=JSON.parse(reader.result);
+      if(!parsed.teachers||!parsed.classes) throw new Error('invalid');
+      if(!parsed.exams) parsed.exams=[];
+      data=parsed; if(!data.settings.templates) data.settings.templates={...DEFAULT_TEMPLATES};
+      save();renderAll();toast('ব্যাকআপ পুনরুদ্ধার সম্পন্ন হয়েছে');
+    }catch(err){toast('ফাইলটি সঠিক নয়');}
+  };
+  reader.readAsText(file);
+}
+function resetData(){
+  if(!confirm('সব ডেটা মুছে ডিফল্ট রুটিন ও শিক্ষক তালিকায় ফিরে যাবে। নিশ্চিত?'))return;
+  data=seedData();save();renderAll();toast('রিসেট সম্পন্ন হয়েছে');
+}
+
+/* ---------- modal ---------- */
+function closeModal(){document.getElementById('modalback').classList.remove('open');}
+document.getElementById('modalback').addEventListener('click',e=>{if(e.target.id==='modalback')closeModal();});
+
+renderAll();
+</script>
+</body>
+</html>
