@@ -415,8 +415,8 @@ function setSyncDot(state){
 }
 
 /* ---------- auth & permissions ---------- */
-function isSuperAdmin(){ return !!(currentAdmin && currentAdmin.role==='superadmin'); }
-function hasPerm(perm){ return isSuperAdmin() || !!(currentAdmin && currentAdmin.permissions && currentAdmin.permissions[perm]); }
+function isSuperAdmin(){ if(!FIREBASE_ENABLED) return true; return !!(currentAdmin && currentAdmin.role==='superadmin'); }
+function hasPerm(perm){ if(!FIREBASE_ENABLED) return true; return isSuperAdmin() || !!(currentAdmin && currentAdmin.permissions && currentAdmin.permissions[perm]); }
 function allowedBranches(){
   if(!FIREBASE_ENABLED) return data.branches.slice();
   if(isSuperAdmin()) return data.branches.slice();
@@ -429,6 +429,7 @@ function signIn(){
 }
 function signOutUser(){ firebase.auth().signOut(); }
 
+let adminsLoaded=false;
 function resolveAdmin(){
   if(!data.admins || data.admins.length===0){
     const rec={id:emailKey(currentUser.email),email:currentUser.email,name:currentUser.name,role:'superadmin',branches:[],permissions:{classes:true,exams:true,teachers:true,reminders:true}};
@@ -456,6 +457,12 @@ function renderAuthGate(){
       <h2>Business Titan টিচার রিমাইন্ডার</h2>
       <p>শুধুমাত্র অনুমোদিত Gmail অ্যাকাউন্ট দিয়ে প্রবেশ করা যাবে।</p>
       <button class="gsignin" onclick="signIn()">🔵 Google দিয়ে সাইন-ইন করুন</button>
+    </div>`;
+  }else if(!adminsLoaded){
+    el.innerHTML=`<div class="authbox">
+      <img class="logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABdCAYAAAAVIWCbAAAJbElEQVR42u1ca4xdVRX+vm/vc9tioS2lSHmEgBgsERJ8JLb4gpCAGDGRDEYxEY1R8Y/GP5pobJqCMcYf6g9MNCIxBgMlIfIHEh5RmpogkYhII/jLEl6WCUgLbc85ey1/zD4zZ27vMI977nTu1J3s3Myd89jr299ae6211748svuC2t0C5mlWrPOYqoOV8Yk3wqY/PPfCm7+/8vb9h30CgXuQMKZNWIDwgCNVFenlmevjkU+epdd+uWPr0cdf23XRDdyD5DuhsQXAF3RRjcAapUc/UsGOlsesF+ySjUV976s7L/4Rd9HumUAAwPFjwAKaMUJuIMDENQKDDlduR6uUNp9afmdy57tuvXEP0j0T48eEhQGACLgQPOVuiIRKrlH11rF649r6e6/svuTaG/cg+T0Iqw4AIQEEnAQIGAkHUKBi5QUJoFeXP/7HzokeJmCrDoC3ayTCkdJtw5rq0q3469UkfJxY0I3OEsYop8JnVqUNWNBCkcCI+nLfuVO6cXz8AnVDACCZgeTWSTyw3gG4j8eS2AkA7iAdcIfCxnU6+VSAcNIRaVVZoD4ZbQAchIHAwYPjZgTZiQ1wCI7xa/JpEjgcWJIQDkCwvPhvmUFlLBigmXiIQ7GAMGf1FsbMBpCgt4TnEHpApHry7IvHKjcQE5DgAD3Tf2kIWO30gDrgxRcLANXYAHBKVFARAE9ZerY0mwO0ndnqedsCBkRHechOPw+HxsoPiIeO6s4AnmZO19SS7k7APNMiyy3CDQDMZ6dSDIBoPS9DheLA82dffAz4E/7fxqTRJ7oNXcctQUoAscPnOXAcAAQWDbL39ZECMA7uujIQ1jUglPRtAO/IDycAmBkkzdj49mgkmFmOAj0C6OV7A8lJM/spppwh5e+3hRBudve3Gna4+5rMvGMk6yailnSU5Otm9kII4UBZls8DONw35oZN3agaSSfpA2g33Ztr5rsOwKsATmlWGADo9XoTC7jvuPeQrEkekPRICOEnvV7v0wA2DwBjaBa/nB2XMn8upR/Ln8+0bEoEgBDC9STb18zX6zy7s4AJIbikV0IIvwkhXDUHK5YMQFu/ltKbAf9zDgC8X6gFdMv31AAqkomkS2oYsk/SFwGsadkzLcXArOQVSnl2o7vL3d3Mkrs7gB0k75T0F0mfa4G2KLUYt52cZkklSXP35O6XAbiL5CMxxg+2mKYVA4B790u5mcnMwhQpLAG4ysz2kdwFoGix4cQDQI7U3RCA4O4JQCHpB5IeBfDuzIY4383jmMka1IKZuZnV7v5hSftCCNdlIxpWiw2YP7Zxj+6ezGyLu98v6Stvx4TVBkDbLzAzk7v/StItmQlx1ACspNhC2QAnALcD+PwgdVgOBpxIUAiAZmaS7ogxXpHVIYwEgBFb+2GZsCaldDeAc5o81mq2AceBkFXhHEm/brPjZAEA2VeoAVwj6ZtZFXQyATC9OgDYDeACADYKAFZylolm5u6+nuRuAL4cDGiitPl6aoW/7ZzAKOyBkfxsjPGKuByot/J6A1eOJlhqVpF28EQyuecti+7G4+4ezeyHnQLQF/UlAEgpPQbg+jyrCOF4tzylJABrSW6UtNXdL3T3be7+Pkk9M4O7W4erVvOcjwLASx1mhJ7NoWhXtmBbCOFnJKucVaqHGONx+UdJ1mlKjOQgAJokxkJ6zL0/q7MjhPDcElNr8/WRAzAsVRs13Uryb12D0KVxGUWzVhT3krtfT/IlScz/68wYrPTWgHCA5Ne7nLRx8gRrADGldL+730dS6GB3qGsVGPVmpuWsz62Y2X7zk4UB0wAAeBJTVRhD24KVbgTnHDPJPZKGzkGMYzRoADzGuBdTe4lhGDUYRwAcAMqyPADg5ex++8mkAk076u6Hh9anvA/f1aCKlic4+jCzg4ELx1dgLHksJDcCOHWZ5F+XExtDA3CorVtDhsIbiqLYMuLMUPPcLSTPGPZdAvCfDpjE7JWFlNJlWGKxwmLsVgjhUgBrc55gKABeyBz2IXXA8+e1I/YIHYCb2XX5fcMFRZK+m8tOhk02WA6JJzF1aGAULGhWrU2SugjjXWb2dNZhdaEG7n66pG9gEVUaiwTAY4y3uPs7s9oNrb/nSprsAs18f5L0XwAX5ed3VYrbPOd8Sa9l4Ycdb6O23Nthzi1J8hDCnzFVRNmFKjTUZ4zxYU2dcukqKwSEEG7NAFQdJRzrbFf2tGZuqUyYLrsLIfy2I3s1G4AY4/YMgHX44FqSS7oPwIaWMFrErDegbZb0QJ75LoWfPiRTkNyP2SnuzpgQQng6hPDxATPbZID7s8LThi2EcI2kZ0cw89MAxLwcfj+E0JkatJnQ5OBDCHfFGLcviPcxXhFjvLupDO165qerTjFT1X2+pGfc/ZTs1nbmypK0nMNr/n4SwIPu/jTJNzPoUdImM3uPu19JcnvjYru7dbBM949pVjJF+cs7ujSGA5bIGn2V4f0zkvV8mj0jGIcDaOqOH2bbwej1etvqun7S3Yupo1MjCWjagPS/o/kfO/QfBmaVSFq/XQqZBb8YkbVdEb3ZZyT5u7mcjbMkHcwbh7bKhDdJieQhABcOYnjIK8KXMguqVcaAKh+8+NbbOWcNCPeO0CCeEOEz9R/qc7Lm9Ls3k/zXiK3xcvWUhX8RwLkLiU8CABRFcXkI4Y0R7csvp/AmqYwxfmwxcUnIrui1JEvMFDKNk/BNeO6SbuoLrhYVid2QQRgnJqTsgTqAry1F+FkghBA+RfJwY1BWuPBN/JEk3dxFYqZBbgfJf7dAWIl+QgXAJb0K4BPDzPxcKanzJD2U19MVs0KQTHnGXdLjALZ1KXw/CIHkLkllK1Q9UbYhNZTP/eeYOb47kniivaH6IUl7+2L2ehlUo4ks69Zp0icAXL2cO98NupT0ZUn7+w5JVx1mbttHaau+kHq/pK+2qL6sv23aRnmdpJskPdroYouWVR8gtgBh+88Oe2u2jeQfJX0BwLoBk7LsbdaLi6J4P8nbJD0lyeY4Pt8WsF0hbhhwpF6SSXqK5G0APjDg/Uua9S6p0k6vNfuCKori0pTSR9x9O4D3AjgbwOmYKlsfmKrKQLyOqTrm/ST3hRAeq6rq75gpihr0vhMKQL9qCAN+Vmv9+vVnlGV5ppltdvfTAKxNKXne8T1C8g1Jk2VZHgQwOUC42FKRzvbaR9XYmqlBP7CyUPVin2p0XmywXI19wGBAThB9go70bPP/AIRT4qmiZq05AAAAAElFTkSuQmCC" alt="">
+      <h2>লোড হচ্ছে...</h2>
+      <p>${esc(currentUser.email)} — অ্যাডমিন তালিকা যাচাই করা হচ্ছে, একটু অপেক্ষা করুন।</p>
     </div>`;
   }else{
     el.innerHTML=`<div class="authbox">
@@ -487,7 +494,7 @@ function initFirebase(){
     firebase.auth().onAuthStateChanged(user=>{
       if(user){
         currentUser={email:user.email,name:user.displayName,photo:user.photoURL};
-        if(fbReady) resolveAdmin(); else renderAuthGate();
+        if(adminsLoaded) resolveAdmin(); else renderAuthGate();
       }else{
         currentUser=null;currentAdmin=null;renderAuthGate();
       }
@@ -517,14 +524,13 @@ function attachFirebaseListeners(){
     data.admins=objToArray(s.val());
     data.admins.forEach(a=>{if(!a.permissions)a.permissions={classes:false,exams:false,teachers:false,reminders:false};if(!a.branches)a.branches=[];});
     saveLocalOnly();
-    if(currentUser) currentAdmin=data.admins.find(a=>a.email.toLowerCase()===currentUser.email.toLowerCase())||null;
-    renderAuthGate();afterSync();
+    adminsLoaded=true;
+    if(currentUser){ resolveAdmin(); } else { renderAuthGate(); afterSync(); }
   });
   fbRefs.reminderLog.limitToLast(500).on('value',s=>{ data.reminderLog=objToArray(s.val()).sort((a,b)=>(a.sentAt||'').localeCompare(b.sentAt||'')); saveLocalOnly(); afterSync(); });
   fbRefs.auditLog.limitToLast(500).on('value',s=>{ data.auditLog=objToArray(s.val()).sort((a,b)=>(a.ts||'').localeCompare(b.ts||'')); saveLocalOnly(); afterSync(); });
   fbReady=true;
   setSyncDot('live');
-  if(currentUser) resolveAdmin();
 }
 function afterSync(){
   if(FIREBASE_ENABLED && (!currentUser || !currentAdmin)) return;
@@ -1306,7 +1312,7 @@ function renderSettings(){
       <p class="hint">${FIREBASE_ENABLED
         ? 'Firebase কনফিগ করা আছে — Google সাইন-ইন ও লাইভ সিঙ্ক চালু। শুধু নিচে অ্যাডমিন তালিকায় যুক্ত Gmail দিয়ে সাইন-ইন করলে অ্যাপ খুলবে।'
         : 'এখনো Firebase কনফিগ করা হয়নি — ডেটা শুধু এই ব্রাউজারে সংরক্ষিত থাকছে এবং কোনো লগইন প্রয়োজন নেই। GitHub-এ আপলোড করে Google সাইন-ইন + একাধিক অ্যাডমিন চালু করতে চাইলে ফাইলের ওপরের দিকের FIREBASE_CONFIG অংশে আপনার Firebase প্রজেক্টের তথ্য বসান এবং Authentication-এ Google Sign-in চালু করুন।'}</p>
-      ${FIREBASE_ENABLED?'':`<button class="btn soft" onclick="toggleRulesBox()">🔐 Firebase নিরাপত্তা নিয়ম দেখুন</button><div id="rulesbox" style="display:none;margin-top:10px"><textarea class="mono" readonly>${esc(FIREBASE_RULES_HINT)}</textarea><p class="hint">এই নিয়মগুলো Firebase কনসোল → Realtime Database → Rules-এ পেস্ট করুন। প্রতিটা অ্যাডমিনের বরাদ্দকৃত শাখার বাইরের ক্লাস/পরীক্ষা/শিক্ষক এডিট করা সার্ভার-লেভেলেই আটকে যাবে। নিজে টেস্ট করে দেখে নিন Rules Playground-এ।</p></div>`}
+      <button class="btn soft" onclick="toggleRulesBox()">🔐 Firebase নিরাপত্তা নিয়ম দেখুন</button><div id="rulesbox" style="display:none;margin-top:10px"><textarea class="mono" readonly>${esc(FIREBASE_RULES_HINT)}</textarea><p class="hint">এই নিয়মগুলো Firebase কনসোল → Realtime Database → Rules-এ পেস্ট করুন। প্রতিটা অ্যাডমিনের বরাদ্দকৃত শাখার বাইরের ক্লাস/পরীক্ষা/শিক্ষক এডিট করা সার্ভার-লেভেলেই আটকে যাবে। নিজে টেস্ট করে দেখে নিন Rules Playground-এ।</p></div>
     </div>
 
     <div class="card" style="margin-top:14px">
