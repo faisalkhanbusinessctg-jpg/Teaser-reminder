@@ -186,6 +186,60 @@ footer.credit img{height:26px}
   #printarea{display:block!important}
   .modalback,.toast,.authgate{display:none!important}
 }
+
+/* ===== ডিজাইন আপডেট ===== */
+:root{--radius:18px;--shadow:0 1px 2px rgba(20,23,31,.05),0 10px 28px -12px rgba(20,23,31,.16)}
+body.dark{--bg:#0d1017;--panel:#161a23;--panel2:#1b202b;--line:#262c3a;--shadow:0 1px 0 rgba(255,255,255,.03) inset,0 12px 30px -14px rgba(0,0,0,.7)}
+body{-webkit-font-smoothing:antialiased;line-height:1.5}
+.header{background:radial-gradient(120% 140% at 100% 0%,rgba(239,125,26,.30) 0%,rgba(239,125,26,0) 46%),linear-gradient(160deg,#243049 0%,#1b2436 55%,#141a28 100%);padding-bottom:64px}
+.brandtxt b{font-family:Manrope,'Hind Siliguri',sans-serif;font-size:19px;letter-spacing:.2px}
+.wrap{margin-top:-46px}
+.tabs{padding:5px;gap:4px;border:1px solid var(--line)}
+.tabs button{flex-direction:row;gap:6px;transition:background .15s,color .15s}
+.tabs button .ti{font-size:15px}
+.tabs button.active{background:linear-gradient(135deg,#ef7d1a,#f59a45);color:#fff;box-shadow:0 6px 14px -6px rgba(239,125,26,.7)}
+body.dark .tabs button.active{background:linear-gradient(135deg,#ef7d1a,#f59a45);color:#fff}
+.hero{padding:6px 2px 14px}
+.hero-g{font-family:Manrope,'Hind Siliguri',sans-serif;font-weight:800;font-size:24px;letter-spacing:-.2px}
+.hero-s{margin-top:2px;color:var(--muted);font-size:14.5px}
+.stat{position:relative;overflow:hidden;padding:14px 16px 14px}
+.stat .num{font-size:30px;line-height:1.1;letter-spacing:-.5px}
+.stat .lbl{font-size:12.5px;margin-top:4px}
+.stat .sico{position:absolute;right:12px;top:12px;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-size:16px}
+.stat.t-o .sico{background:rgba(239,125,26,.14)} .stat.t-p .sico{background:var(--purple-bg)}
+.stat.t-o{border-bottom:3px solid var(--accent)} .stat.t-p{border-bottom:3px solid var(--purple)}
+.onboard{margin-bottom:14px;border-style:dashed;background:linear-gradient(180deg,rgba(239,125,26,.07),transparent)}
+.onboard h3{font-size:17px;margin-bottom:4px}
+.onboard .hint{margin:0 0 12px;font-size:13px}
+.section-title{margin:26px 0 10px}
+.section-title h2{font-size:16.5px;letter-spacing:-.1px}
+.section-title .cnt{background:var(--panel);border:1px solid var(--line)}
+.empty{padding:26px 16px;background:transparent}
+.empty::before{content:'🗓️';display:block;font-size:24px;margin-bottom:6px;opacity:.75}
+.entrycard{padding:15px 16px}
+.entrycard::before{width:5px}
+.subj{font-size:16px}
+.btn{transition:transform .08s,filter .15s}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(135deg,#ef7d1a,#f59a45);color:#fff;box-shadow:0 6px 14px -8px rgba(239,125,26,.8)}
+body.dark .btn.primary{background:linear-gradient(135deg,#ef7d1a,#f59a45);color:#fff}
+.field input:focus,.field select:focus,.field textarea:focus,.toolbar input:focus,.toolbar select:focus,.authbox input.au:focus{outline:2px solid rgba(239,125,26,.55);outline-offset:0;border-color:var(--accent)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.authgate{background:radial-gradient(90% 60% at 50% 0%,rgba(239,125,26,.22),transparent 60%),linear-gradient(170deg,#243049,#141a28)}
+.authbox{border-radius:24px;padding:34px 26px 28px}
+.installbtn{background:linear-gradient(135deg,#ef7d1a,#f59a45);border-color:transparent}
+@media(max-width:760px){
+  .header{padding-left:16px;padding-right:16px}
+  .syncdot{display:none}
+  body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+  .wrap{margin-bottom:20px}
+  .tabs{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:50;border-radius:22px;padding:6px;gap:2px;box-shadow:0 16px 40px -10px rgba(0,0,0,.55);background:var(--panel);overflow:visible}
+  .tabs button{flex-direction:column;gap:2px;padding:8px 2px 7px;font-size:11px;border-radius:16px}
+  .tabs button .ti{font-size:19px;line-height:1.1}
+  .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  .hero-g{font-size:21px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
@@ -203,11 +257,11 @@ footer.credit img{height:26px}
 </div>
 <div class="wrap">
   <div class="tabs" id="tabsbar">
-    <button data-tab="home">🏠 হোম</button>
-    <button data-tab="classes">📖 ক্লাস</button>
-    <button data-tab="exams">📝 পরীক্ষা</button>
-    <button data-tab="teachers">👨‍🏫 শিক্ষক</button>
-    <button data-tab="settings">⚙️ সেটিংস</button>
+    <button data-tab="home"><span class="ti">🏠</span><span class="tl">হোম</span></button>
+    <button data-tab="classes"><span class="ti">📖</span><span class="tl">ক্লাস</span></button>
+    <button data-tab="exams"><span class="ti">📝</span><span class="tl">পরীক্ষা</span></button>
+    <button data-tab="teachers"><span class="ti">👨‍🏫</span><span class="tl">শিক্ষক</span></button>
+    <button data-tab="settings"><span class="ti">⚙️</span><span class="tl">সেটিংস</span></button>
   </div>
 
   <section id="view-home" class="view"></section>
@@ -911,6 +965,18 @@ function examInfoCardHtml(ex){
 
 /* ---------- HOME ---------- */
 let homeBranch='';
+
+function homeHeroHtml(c,e){
+  const h=new Date().getHours();
+  const g=h<5?'শুভ রাত্রি':h<12?'সুপ্রভাত':h<16?'শুভ দুপুর':h<18?'শুভ বিকাল':'শুভ সন্ধ্যা';
+  const nm=(currentUser&&currentUser.name&&!currentUser.name.includes('@'))?currentUser.name.split(' ')[0]:'';
+  const sum=(c+e)===0?'আজ কোনো ক্লাস বা পরীক্ষা নেই।':`আজ ${bn(c)}টি ক্লাস ও ${bn(e)}টি পরীক্ষা আছে।`;
+  const empty=(data.teachers.length===0&&data.classes.length===0);
+  return `<div class="hero"><div class="hero-g">${g}${nm?', '+esc(nm):''}</div><div class="hero-s">${sum}</div></div>
+  ${empty?`<div class="card onboard"><h3>শুরু করুন</h3><p class="hint">এখনো কোনো শিক্ষক বা ক্লাস যোগ করা হয়নি। আগে শিক্ষক, তারপর ক্লাস যোগ করলে রিমাইন্ডার পাঠানো যাবে।</p>
+    <div class="actions" style="padding-left:0"><button class="btn primary" onclick="gotoTab('teachers')">👨‍🏫 শিক্ষক যোগ করুন</button><button class="btn soft" onclick="gotoTab('classes')">📖 ক্লাস যোগ করুন</button><button class="btn soft" onclick="gotoTab('settings')">⇧ ব্যাকআপ পুনরুদ্ধার</button></div></div>`:''}`;
+}
+function gotoTab(t){ const b=document.querySelector('#tabsbar button[data-tab="'+t+'"]'); if(b) b.click(); }
 function renderHome(){
   const t=todayISO(), tm=tomorrowISO();
   const myBranches=allowedBranches();
@@ -931,12 +997,13 @@ function renderHome(){
     <div class="toolbar">
       <select id="home-branch" class="grow"><option value="">সব শাখা (আমার আওতাধীন)</option>${branchOptionsHtml(homeBranch,myBranches)}</select>
     </div>
+    ${homeHeroHtml(todayClasses.length,todayExams.length)}
     ${warnHtml}
     <div class="grid g4">
-      <div class="card stat"><div class="num">${bn(todayClasses.length)}</div><div class="lbl">আজকের ক্লাস</div></div>
-      <div class="card stat"><div class="num">${bn(todayExams.length)}</div><div class="lbl">আজকের পরীক্ষা</div></div>
-      <div class="card stat"><div class="num">${bn(upcomingClassCount)}</div><div class="lbl">আসছে ১০ দিনের ক্লাস</div></div>
-      <div class="card stat"><div class="num">${bn(upcomingExamCount)}</div><div class="lbl">আসছে ১০ দিনের পরীক্ষা</div></div>
+      <div class="card stat t-o"><span class="sico">📖</span><div class="num">${bn(todayClasses.length)}</div><div class="lbl">আজকের ক্লাস</div></div>
+      <div class="card stat t-p"><span class="sico">📝</span><div class="num">${bn(todayExams.length)}</div><div class="lbl">আজকের পরীক্ষা</div></div>
+      <div class="card stat t-o"><span class="sico">🗓️</span><div class="num">${bn(upcomingClassCount)}</div><div class="lbl">আসছে ১০ দিনের ক্লাস</div></div>
+      <div class="card stat t-p"><span class="sico">🎯</span><div class="num">${bn(upcomingExamCount)}</div><div class="lbl">আসছে ১০ দিনের পরীক্ষা</div></div>
     </div>
 
     <div class="section-title"><h2>📖 আজকের ক্লাস</h2><span class="cnt">${formatBn(t)}</span></div>
