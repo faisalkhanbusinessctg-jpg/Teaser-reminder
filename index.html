@@ -224,6 +224,7 @@ footer.credit img{height:26px}
    ===================================================================== */
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyDgmKSg7hyRg44lUhZeGqk817iFAM5r0vU",
+  authDomain: "teacher-reminder.firebaseapp.com",
   databaseURL: "https://teacher-reminder-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "teacher-reminder"
 };
@@ -425,7 +426,13 @@ function allowedBranches(){
 
 function signIn(){
   const provider=new firebase.auth.GoogleAuthProvider();
-  firebase.auth().signInWithPopup(provider).catch(()=>toast('সাইন-ইন ব্যর্থ হয়েছে'));
+  firebase.auth().signInWithPopup(provider).catch(e=>{
+    console.error(e);
+    if(e.code==='auth/unauthorized-domain') toast('এই ডোমেইন Firebase-এ অনুমোদিত নয়');
+    else if(e.code==='auth/popup-blocked') toast('পপ-আপ ব্লক করা আছে, অনুমতি দিন');
+    else if(e.code==='auth/popup-closed-by-user') toast('সাইন-ইন উইন্ডো বন্ধ করা হয়েছে');
+    else toast('সাইন-ইন ব্যর্থ: '+(e.code||e.message));
+  });
 }
 function signOutUser(){ firebase.auth().signOut(); }
 
