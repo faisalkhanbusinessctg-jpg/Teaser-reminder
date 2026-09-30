@@ -1,0 +1,18 @@
+{
+  "rules": {
+    "bt_teacher_reminder": {
+      "users": {
+        "$uid": {
+          ".read": "auth != null && auth.uid === $uid",
+          ".write": "auth != null && auth.uid === $uid"
+        }
+      }
+    },
+    "bt_teacher_reminder_public": {
+      "$key": {
+        ".read": true,
+        ".write": "auth != null && auth.uid === $key"
+      }
+    }
+  }
+}

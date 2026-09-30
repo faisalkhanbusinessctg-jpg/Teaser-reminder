@@ -1,0 +1,34 @@
+{
+  "id": "./",
+  "name": "Business Titan টিচার রিমাইন্ডার",
+  "short_name": "BT রিমাইন্ডার",
+  "description": "শিক্ষক ক্লাস ও পরীক্ষা রিমাইন্ডার সিস্টেম",
+  "lang": "bn",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1b2436",
+  "theme_color": "#1b2436",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
