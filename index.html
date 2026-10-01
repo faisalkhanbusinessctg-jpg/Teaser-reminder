@@ -28,7 +28,7 @@
     2. Authentication → Settings → Authorized domains → add your
        GitHub Pages domain (e.g. yourname.github.io)
     3. Realtime Database → Rules → paste the rules from firebase-rules.json
-       (also shown in Settings → Firebase নিরাপত্তা নিয়ম) → Publish
+       (keep that file private — do NOT upload it to GitHub) → Publish
   Teacher share links use the public mirror at
   bt_teacher_reminder_public/{uid}/{teacherId} (name, subject and class
   dates only — no phone numbers).
@@ -298,31 +298,6 @@ const FIREBASE_PATH = "bt_teacher_reminder";
 const FIREBASE_PUBLIC_PATH = "bt_teacher_reminder_public";
 const FIREBASE_ENABLED = FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY";
 
-// Realtime Database security rules — paste into Firebase console → Realtime
-// Database → Rules. Restricts classes/exams/teachers writes to admins whose
-// assigned branches include that record's branch (checked server-side, not
-// just in this page). Also shown in Settings → Firebase নিরাপত্তা নিয়ম.
-// NOTE: I cannot run Firebase myself to verify this — please test it in the
-// Rules Playground before relying on it.
-const FIREBASE_RULES_HINT = `{
-  "rules": {
-    "bt_teacher_reminder": {
-      "users": {
-        "$uid": {
-          ".read": "auth != null && auth.uid === $uid",
-          ".write": "auth != null && auth.uid === $uid"
-        }
-      }
-    },
-    "bt_teacher_reminder_public": {
-      "$key": {
-        ".read": true,
-        ".write": "auth != null && auth.uid === $key"
-      }
-    }
-  }
-}`;
-
 /* ---------- constants & seed data ---------- */
 const STORE_KEY='btReminder_v1';
 const BN='০১২৩৪৫৬৭৮৯';
@@ -332,52 +307,9 @@ const DEFAULT_BRANCH='অনলাইন শাখা';
 const PERM_KEYS=['classes','exams','teachers','reminders'];
 const PERM_LABELS={classes:'ক্লাস পরিচালনা',exams:'পরীক্ষা পরিচালনা',teachers:'শিক্ষক পরিচালনা',reminders:'রিমাইন্ডার পাঠানো'};
 
-const TEACHER_SEED=[
- {name:'জামাল উদ্দিন রাজু',subject:'বাংলা',rangeLabel:'লেকচার ১-১১',rangeFrom:1,rangeTo:11,phone:'01521220350',telegram:'',branch:DEFAULT_BRANCH},
- {name:'মোমিনুল ইসলাম',subject:'ইংরেজি',rangeLabel:'লেকচার ১-১২',rangeFrom:1,rangeTo:12,phone:'01626908670',telegram:'',branch:DEFAULT_BRANCH},
- {name:'শাওন আল ইমন',subject:'হিসাববিজ্ঞান',rangeLabel:'লেকচার ১-১১',rangeFrom:1,rangeTo:11,phone:'01521773120',telegram:'',branch:DEFAULT_BRANCH},
- {name:'আল আমিন',subject:'ব্যবস্থাপনা',rangeLabel:'লেকচার ১-৪',rangeFrom:1,rangeTo:4,phone:'01921332219',telegram:'',branch:DEFAULT_BRANCH},
- {name:'সাজিদ',subject:'ব্যবস্থাপনা',rangeLabel:'লেকচার ৫-৭',rangeFrom:5,rangeTo:7,phone:'01328620732',telegram:'',branch:DEFAULT_BRANCH},
- {name:'তাওহিদুল ইসলাম',subject:'ফিন্যান্স',rangeLabel:'লেকচার ১-৭',rangeFrom:1,rangeTo:7,phone:'01319231710',telegram:'',branch:DEFAULT_BRANCH},
- {name:'সাবিবর হোসেন',subject:'মার্কেটিং',rangeLabel:'লেকচার ১-৬',rangeFrom:1,rangeTo:6,phone:'01915896701',telegram:'',branch:DEFAULT_BRANCH}
-];
-
-// Raw source rows: [date, subject, lecture, examName] parsed from Online Class Routine (2026-27 session).
-// Split below into a pure class list (date/subject/lecture) and a pure exam list (date/subject/examName).
-const RAW_SEED=[
-["2026-08-22","ইংরেজি","১","Memory Test"],["2026-08-23","বাংলা","১","Memory Test"],["2026-08-24","হিসাববিজ্ঞান","১","Memory Test"],
-["2026-08-25","ব্যবস্থাপনা","১","Memory Test"],["2026-08-26","ফিন্যান্স","১","Memory Test"],["2026-08-27","মার্কেটিং","১","Memory Test"],
-["2026-08-29","ইংরেজি","২","CT-01"],["2026-08-30","বাংলা","২","CT-01"],["2026-08-31","হিসাববিজ্ঞান","২","CT-01"],
-["2026-09-01","ব্যবস্থাপনা","২","CT-01"],["2026-09-02","ফিন্যান্স","২","CT-01"],["2026-09-03","মার্কেটিং","২","CT-01"],
-["2026-09-05","ইংরেজি","৩","CT-02"],["2026-09-06","বাংলা","৩","CT-02"],["2026-09-07","হিসাববিজ্ঞান","৩","CT-02"],
-["2026-09-08","ব্যবস্থাপনা","৩","CT-02"],["2026-09-09","ফিন্যান্স","৩","CT-02"],["2026-09-10","মার্কেটিং","৩","CT-02"],
-["2026-09-12","ইংরেজি","৪","CT-03"],["2026-09-13","বাংলা","৪","CT-03"],["2026-09-14","হিসাববিজ্ঞান","৪","CT-03"],
-["2026-09-15","ব্যবস্থাপনা","৪","CT-03"],["2026-09-16","ফিন্যান্স","৪","CT-03"],["2026-09-17","মার্কেটিং","৪","CT-03"],
-["2026-09-19","ইংরেজি","Solve Class (১-৪)","CT-04"],["2026-09-20","বাংলা","Solve Class (১-৪)","CT-04"],
-["2026-09-21","হিসাববিজ্ঞান","Solve Class (১-৪)","CT-04"],["2026-09-22","ব্যবস্থাপনা","Solve Class (১-৪)","CT-04"],
-["2026-09-23","ফিন্যান্স","Solve Class (১-৪)","CT-04"],["2026-09-24","মার্কেটিং","Solve Class (১-৩)","CT-04"],
-["2026-09-26","ইংরেজি","৫","AT-01"],["2026-09-27","বাংলা","৫","AT-01"],["2026-09-28","হিসাববিজ্ঞান","৫","AT-01"],
-["2026-09-29","ব্যবস্থাপনা","৫","AT-01"],["2026-09-30","ফিন্যান্স","৫","AT-01"],["2026-10-01","মার্কেটিং","৫","AT-02"],
-["2026-10-03","ইংরেজি","৬","CT-05"],["2026-10-04","বাংলা","৬","CT-05"],["2026-10-05","হিসাববিজ্ঞান","৬","CT-05"],
-["2026-10-06","ব্যবস্থাপনা","৬","CT-05"],["2026-10-07","ফিন্যান্স","৬","CT-05"],["2026-10-08","মার্কেটিং","৬","CT-05"],
-["2026-10-10","ইংরেজি","৭","CT-06"],["2026-10-11","বাংলা","৭","CT-06"],["2026-10-12","হিসাববিজ্ঞান","৭","CT-06"],
-["2026-10-13","ব্যবস্থাপনা","৭","CT-06"],["2026-10-14","ফিন্যান্স","৭","CT-06"],
-["2026-10-17","ইংরেজি","৮","CT-07"],["2026-10-18","বাংলা","৮","CT-07"],["2026-10-19","হিসাববিজ্ঞান","৮","CT-07"],
-["2026-10-20","ফিন্যান্স","৮","CT-07"],
-["2026-10-24","ইংরেজি","Solve Class (৫-৮)","AT-02"],["2026-10-25","বাংলা","Solve Class (৫-৮)","AT-02"],
-["2026-10-26","হিসাববিজ্ঞান","Solve Class (৫-৮)","AT-02"],["2026-10-27","ব্যবস্থাপনা","Solve Class (৫-৭)","AT-02"],
-["2026-10-28","ফিন্যান্স","Solve Class (৫-৮)","AT-02"],["2026-10-29","মার্কেটিং","Solve Class (৪-৬)","AT-02"],
-["2026-10-31","ইংরেজি","৯","CT-08"],["2026-11-01","বাংলা","৯","CT-08"],["2026-11-02","হিসাববিজ্ঞান","৯","CT-08"],
-["2026-11-03","বাংলা","১০","CT-09"],["2026-11-04","ইংরেজি","১০","CT-09"],["2026-11-05","হিসাববিজ্ঞান","১০","CT-09"],
-["2026-11-07","ইংরেজি","১১","CT-10"],["2026-11-08","বাংলা","১১","CT-10"],["2026-11-09","হিসাববিজ্ঞান","১১","CT-10"],
-["2026-11-11","ইংরেজি","১২","CT-11"],
-["2026-11-14","ইংরেজি","Solve Class (৯-১১)","AT-03"],["2026-11-16","বাংলা","Solve Class (৯-১২)","AT-03"],
-["2026-11-18","হিসাববিজ্ঞান","Solve Class (৯-১১)","AT-03"],
-["2026-11-22","বাংলা","All Topic",""],["2026-11-24","ইংরেজি","All Topic",""],["2026-11-26","হিসাববিজ্ঞান","All Topic",""],
-["2026-11-28","ব্যবস্থাপনা","All Topic",""],["2026-11-30","ফিন্যান্স","All Topic",""],["2026-11-30","মার্কেটিং","All Topic",""],
-["2026-12-03","ইংরেজি","All Topic",""],["2026-12-05","বাংলা","All Topic",""],["2026-12-07","হিসাববিজ্ঞান","All Topic",""],
-["2026-12-09","ব্যবস্থাপনা","All Topic",""],["2026-12-10","ফিন্যান্স","All Topic",""],["2026-12-11","মার্কেটিং","All Topic",""]
-];
+// (নিরাপত্তার জন্য এই ফাইলে কোনো আসল শিক্ষক/ক্লাসের ডেটা রাখা হয়নি — ডেটা শুধু ইউজারের নিজস্ব অ্যাকাউন্টে থাকে)
+const TEACHER_SEED=[];
+const RAW_SEED=[];
 const CLASS_SEED=RAW_SEED.map(r=>[r[0],r[1],r[2]]);
 const EXAM_SEED=RAW_SEED.filter(r=>r[3]).map(r=>[r[0],r[1],r[3]]);
 
@@ -1285,12 +1217,17 @@ function openImportModal(kind){
   const examples={
     class:'2026-08-22, ইংরেজি, ১, সন্ধ্যা ৭:১৫, সন্ধ্যা ব্যাচ, অনলাইন শাখা',
     exam:'2026-08-29, ইংরেজি, CT-01, অনলাইন শাখা',
-    teacher:'মোমিনুল ইসলাম, ইংরেজি, লেকচার ১-১২, 1, 12, 01626908670, , অনলাইন শাখা'
+    teacher:'মোমিনুল ইসলাম, ইংরেজি, লেকচার ১-১২, 1, 12, 01700000001, , অনলাইন শাখা'
   };
   document.getElementById('modal').innerHTML=`
     <h3>বাল্ক ইম্পোর্ট — ${labels[kind]}</h3>
     <p class="hint">প্রতি লাইনে একটি এন্ট্রি, কমা দিয়ে আলাদা করুনঃ<br><b>${formats[kind]}</b><br>উদাহরণঃ ${examples[kind]}<br>শাখা না লিখলে আপনার প্রথম বরাদ্দকৃত শাখা ধরা হবে।</p>
     <button class="btn soft" style="margin-bottom:12px" onclick="downloadImportDemo('${kind}')">📄 ডেমো ফাইল ডাউনলোড</button>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+      <label class="btn primary" style="cursor:pointer">📎 Excel / PDF / CSV আপলোড<input type="file" id="m-file" accept=".xlsx,.xls,.csv,.pdf,.txt" style="display:none" onchange="handleImportFile(event)"></label>
+      <button class="btn soft" onclick="downloadImportXlsx('${kind}')">📊 Excel টেমপ্লেট</button>
+    </div>
+    <p class="hint" id="m-fileinfo" style="margin:0 0 10px">ফাইলের প্রথম সারিতে কলামের নাম (তারিখ, বিষয়…) থাকলে কলামের ক্রম যাই হোক চলবে। একাধিক শিট থাকলে সবগুলো পড়া হবে। PDF-এ লেখা টেবিল আকারে থাকতে হবে (স্ক্যান করা ছবি পড়া যায় না)।</p>
     <div class="field"><textarea id="m-bulk" placeholder="${examples[kind]}"></textarea></div>
     <div id="import-preview"></div>
     <div class="modalactions"><button class="btn soft" onclick="closeModal()">বাতিল</button><button class="btn primary" onclick="previewBulk()">প্রিভিউ দেখুন</button></div>`;
@@ -1302,8 +1239,8 @@ function downloadImportDemo(kind){
     '2026-08-29, বাংলা, CT-01, অনলাইন শাখা',
     '2026-09-19, হিসাববিজ্ঞান, CT-04, অনলাইন শাখা'
   ] : kind==='teacher' ? [
-    'মোমিনুল ইসলাম, ইংরেজি, লেকচার ১-১২, 1, 12, 01626908670, , অনলাইন শাখা',
-    'জামাল উদ্দিন রাজু, বাংলা, লেকচার ১-১১, 1, 11, 01521220350, , অনলাইন শাখা'
+    'মোমিনুল ইসলাম, ইংরেজি, লেকচার ১-১২, 1, 12, 01700000001, , অনলাইন শাখা',
+    'জামাল উদ্দিন রাজু, বাংলা, লেকচার ১-১১, 1, 11, 01700000002, , অনলাইন শাখা'
   ] : [
     '2026-08-22, ইংরেজি, ১, সন্ধ্যা ৭:১৫, সন্ধ্যা ব্যাচ, অনলাইন শাখা',
     '2026-08-23, বাংলা, ২, সন্ধ্যা ৭:১৫, সন্ধ্যা ব্যাচ, অনলাইন শাখা',
@@ -1315,6 +1252,163 @@ function downloadImportDemo(kind){
   a.download=`bt-${kind}-import-demo.csv`;
   a.click();
 }
+
+/* ---------- বাল্ক ইম্পোর্ট: Excel / CSV / PDF ফাইল রিডার ---------- */
+const XLSX_URL='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+const PDFJS_URL='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+const PDFJS_WORKER_URL='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+function loadScriptOnce(src){
+  return new Promise((res,rej)=>{
+    const el=document.createElement('script'); el.src=src; el.onload=res;
+    el.onerror=()=>rej(new Error('ফাইল পড়ার লাইব্রেরি লোড হয়নি — ইন্টারনেট সংযোগ চেক করুন'));
+    document.head.appendChild(el);
+  });
+}
+async function getXLSX(){ if(!window.XLSX) await loadScriptOnce(XLSX_URL); return window.XLSX; }
+async function getPdfJs(){
+  if(!window.pdfjsLib){
+    await loadScriptOnce(PDFJS_URL);
+    const code=await (await fetch(PDFJS_WORKER_URL)).text();
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc=URL.createObjectURL(new Blob([code],{type:'text/javascript'}));
+  }
+  return window.pdfjsLib;
+}
+const IMPORT_COLS={
+  class:['date','subject','lecture','time','batch','branch'],
+  exam:['date','subject','examName','branch'],
+  teacher:['name','subject','rangeLabel','rangeFrom','rangeTo','phone','telegram','branch']
+};
+const IMPORT_HEADS={
+  class:['তারিখ','বিষয়','লেকচার','সময়','ব্যাচ','শাখা'],
+  exam:['তারিখ','বিষয়','পরীক্ষার নাম','শাখা'],
+  teacher:['নাম','বিষয়','লেকচার রেঞ্জ লেবেল','রেঞ্জ শুরু','রেঞ্জ শেষ','মোবাইল','Telegram','শাখা']
+};
+const IMPORT_SYN={
+  date:/তারিখ|date/i, subject:/বিষয়|subject/i, lecture:/লেকচার|lecture/i, time:/সময়|time/i,
+  batch:/ব্যাচ|batch/i, branch:/শাখা|branch/i, examName:/পরীক্ষ|exam/i,
+  rangeLabel:/রেঞ্জ.*লেবেল|range.*label|লেবেল/i, rangeFrom:/শুরু|from/i, rangeTo:/শেষ|to$/i,
+  name:/নাম|name|শিক্ষক/i, phone:/মোবাইল|ফোন|phone|mobile/i, telegram:/telegram|টেলিগ্রাম/i
+};
+function bnToEn(v){ return String(v).replace(/[০-৯]/g,d=>'০১২৩৪৫৬৭৮৯'.indexOf(d)); }
+function pad2(n){ return String(n).padStart(2,'0'); }
+function normDate(v){
+  if(v instanceof Date){ const d=new Date(v.getTime()+12*3600*1000); return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
+  if(typeof v==='number' && v>20000 && v<80000){ const d=new Date(Math.round((v-25569)*86400*1000)); return d.getUTCFullYear()+'-'+pad2(d.getUTCMonth()+1)+'-'+pad2(d.getUTCDate()); }
+  const t=bnToEn(v).trim(); let m;
+  if((m=t.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/))) return m[1]+'-'+pad2(m[2])+'-'+pad2(m[3]);
+  if((m=t.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{2,4})$/))){ const y=m[3].length===2?'20'+m[3]:m[3]; return y+'-'+pad2(m[2])+'-'+pad2(m[1]); }
+  if((m=t.match(/^(\d{1,2})\s+([A-Za-z]{3})[a-z]*\.?,?\s+(\d{4})$/))){
+    const mi=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(m[2].toLowerCase());
+    if(mi>=0) return m[3]+'-'+pad2(mi+1)+'-'+pad2(m[1]);
+  }
+  return t;
+}
+// হেডার সারি চিনে কলামের ক্রম বের করা; হেডার না হলে null
+function detectHeader(row,kind){
+  const keys=IMPORT_COLS[kind], map={}, used={};
+  row.forEach((cell,i)=>{
+    const t=String(cell).trim(); if(!t) return;
+    for(const k of keys){ if(!used[k] && IMPORT_SYN[k].test(t)){ map[k]=i; used[k]=1; break; } }
+  });
+  return (Object.keys(map).length>=2 && (kind==='teacher'?('name' in map):('date' in map)))?map:null;
+}
+function tableToLines(rows,kind){
+  const keys=IMPORT_COLS[kind], out=[]; let map=null;
+  rows.forEach(r=>{
+    const row=r.map(c=>(c==null?'':(c instanceof Date?c:(typeof c==='number'?c:String(c).trim()))));
+    if(!row.some(c=>c!=='')) return;
+    const h=detectHeader(row,kind);
+    if(h){ map=h; return; }
+    const cells=keys.map((k,i)=>{
+      const idx=map?(k in map?map[k]:-1):i;
+      let v=idx>=0&&idx<row.length?row[idx]:'';
+      if(k==='date') v=normDate(v);
+      else if(v instanceof Date) v=normDate(v);
+      return String(v).replace(/[\t\r\n]+/g,' ').trim();
+    });
+    if(cells.every(c=>c==='')) return;
+    out.push(cells.join('\t').replace(/\t+$/,''));
+  });
+  return out;
+}
+async function pdfToRows(file,kind){
+  const pdfjs=await getPdfJs();
+  const pdf=await pdfjs.getDocument({data:await file.arrayBuffer()}).promise;
+  const rows=[]; let anchors=null;
+  for(let n=1;n<=pdf.numPages;n++){
+    const items=(await (await pdf.getPage(n)).getTextContent()).items.filter(it=>it.str&&it.str.trim()!=='');
+    const lines=[];
+    items.forEach(it=>{
+      const y=it.transform[5], x=it.transform[4];
+      let ln=lines.find(l=>Math.abs(l.y-y)<=3);
+      if(!ln){ ln={y,its:[]}; lines.push(ln); }
+      ln.its.push({x,w:it.width||0,t:it.str});
+    });
+    lines.sort((a,b)=>b.y-a.y).forEach(ln=>{
+      ln.its.sort((a,b)=>a.x-b.x);
+      const cells=[]; let cur=null, curX=0, endX=0;
+      ln.its.forEach(it=>{
+        if(cur!==null && it.x-endX<=6) cur+=(/\s$/.test(cur)||/^\s/.test(it.t)?'':' ')+it.t;
+        else { if(cur!==null) cells.push({t:cur.trim(),x:curX}); cur=it.t; curX=it.x; }
+        endX=it.x+it.w;
+      });
+      if(cur!==null) cells.push({t:cur.trim(),x:curX});
+      const texts=cells.map(c=>c.t);
+      if(detectHeader(texts,kind)){ anchors=cells.map(c=>c.x); rows.push(texts); return; }
+      if(anchors){
+        // ফাঁকা ঘর থাকলেও কলাম ঠিক রাখতে: প্রতিটি লেখা হেডারের সবচেয়ে কাছের কলামে বসানো হয়
+        const out=anchors.map(()=>'');
+        cells.forEach(c=>{
+          let best=0; anchors.forEach((ax,i)=>{ if(Math.abs(ax-c.x)<Math.abs(anchors[best]-c.x)) best=i; });
+          out[best]=out[best]?out[best]+' '+c.t:c.t;
+        });
+        rows.push(out);
+      }else rows.push(texts);
+    });
+  }
+  return rows;
+}
+async function handleImportFile(ev){
+  const f=ev.target.files[0]; if(!f) return; ev.target.value='';
+  const info=document.getElementById('m-fileinfo'), name=f.name.toLowerCase();
+  info.textContent='ফাইল পড়া হচ্ছে... ('+f.name+')'; info.style.color='';
+  try{
+    let lines=[];
+    if(/\.(xlsx|xls|csv)$/.test(name)){
+      const X=await getXLSX();
+      const wb=/\.csv$/.test(name)?X.read(await f.text(),{type:'string',cellDates:true}):X.read(await f.arrayBuffer(),{type:'array',cellDates:true});
+      wb.SheetNames.forEach(sn=>{
+        const rows=X.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,defval:''});
+        lines.push(...tableToLines(rows,importKind));
+      });
+    }else if(/\.pdf$/.test(name)){
+      lines=tableToLines(await pdfToRows(f,importKind),importKind);
+    }else{
+      lines=(await f.text()).split('\n').map(l=>l.trim()).filter(Boolean);
+    }
+    if(!lines.length){ info.textContent='এই ফাইল থেকে কোনো তথ্য পাওয়া যায়নি'+(/\.pdf$/.test(name)?' (স্ক্যান করা ছবির PDF হতে পারে — Excel ব্যবহার করুন)':'')+'।'; info.style.color='#d93025'; return; }
+    const ta=document.getElementById('m-bulk');
+    ta.value=(ta.value.trim()?ta.value.trim()+'\n':'')+lines.join('\n');
+    info.textContent='✅ '+f.name+' — '+bn(lines.length)+'টি সারি পাওয়া গেছে। নিচে প্রিভিউ দেখে নিশ্চিত করুন।';
+    previewBulk();
+  }catch(e){
+    console.error(e); info.textContent='ফাইল পড়া যায়নি: '+(e&&e.message||e); info.style.color='#d93025';
+  }
+}
+async function downloadImportXlsx(kind){
+  try{
+    const X=await getXLSX();
+    const sample={
+      class:[['2026-08-22','ইংরেজি','১','সন্ধ্যা ৭:১৫','সন্ধ্যা ব্যাচ','অনলাইন শাখা'],['2026-08-23','বাংলা','২','সন্ধ্যা ৭:১৫','সন্ধ্যা ব্যাচ','অনলাইন শাখা']],
+      exam:[['2026-08-29','ইংরেজি','CT-01','অনলাইন শাখা'],['2026-09-05','বাংলা','CT-02','অনলাইন শাখা']],
+      teacher:[['শিক্ষকের নাম','ইংরেজি','লেকচার ১-১২',1,12,'01700000001','','অনলাইন শাখা']]
+    }[kind];
+    const ws=X.utils.aoa_to_sheet([IMPORT_HEADS[kind],...sample]);
+    ws['!cols']=IMPORT_HEADS[kind].map(()=>({wch:20}));
+    const wb=X.utils.book_new(); X.utils.book_append_sheet(wb,ws,'Sheet1');
+    X.writeFile(wb,`bt-${kind}-import-template.xlsx`);
+  }catch(e){ toast('টেমপ্লেট তৈরি করা যায়নি: '+(e.message||e)); }
+}
 function ensureBranchName(name){
   const b=(name||'').trim();
   const myBranches=allowedBranches();
@@ -1324,7 +1418,7 @@ function previewBulk(){
   const lines=document.getElementById('m-bulk').value.split('\n').map(l=>l.trim()).filter(Boolean);
   const rows=[];
   lines.forEach(line=>{
-    const parts=line.split(',').map(p=>p.trim());
+    const parts=(line.includes('\t')?line.split('\t'):line.split(',')).map(p=>p.trim());
     let ok=true,reason='',rec={};
     if(importKind==='exam'){
       const [date,subject,examName,branch]=parts;
@@ -1471,9 +1565,8 @@ function renderSettings(){
     <div class="card">
       <h3 style="margin-bottom:12px">সিঙ্ক স্ট্যাটাস</h3>
       <p class="hint">${FIREBASE_ENABLED
-        ? 'আপনার নিজস্ব অ্যাকাউন্টে সাইন-ইন করা আছে — ডেটা শুধু আপনার অ্যাকাউন্টে সংরক্ষিত ও লাইভ সিঙ্ক হচ্ছে। যে কেউ নিজের ইমেইল বা Google দিয়ে অ্যাকাউন্ট খুলতে পারে, কিন্তু একজন আরেকজনের ডেটা দেখতে পায় না।'
+        ? 'আপনার নিজস্ব অ্যাকাউন্টে সাইন-ইন করা আছে — ডেটা শুধু আপনার অ্যাকাউন্টে সংরক্ষিত ও লাইভ সিঙ্ক হচ্ছে।'
         : 'এখনো Firebase কনফিগ করা হয়নি — ডেটা শুধু এই ব্রাউজারে সংরক্ষিত থাকছে এবং কোনো লগইন প্রয়োজন নেই। GitHub-এ আপলোড করে Google সাইন-ইন + একাধিক অ্যাডমিন চালু করতে চাইলে ফাইলের ওপরের দিকের FIREBASE_CONFIG অংশে আপনার Firebase প্রজেক্টের তথ্য বসান এবং Authentication-এ Google Sign-in চালু করুন।'}</p>
-      <button class="btn soft" onclick="toggleRulesBox()">🔐 Firebase নিরাপত্তা নিয়ম দেখুন</button><div id="rulesbox" style="display:none;margin-top:10px"><textarea class="mono" readonly>${esc(FIREBASE_RULES_HINT)}</textarea><p class="hint">এই নিয়মগুলো Firebase কনসোল → Realtime Database → Rules-এ পেস্ট করুন। প্রতিটা অ্যাডমিনের বরাদ্দকৃত শাখার বাইরের ক্লাস/পরীক্ষা/শিক্ষক এডিট করা সার্ভার-লেভেলেই আটকে যাবে। নিজে টেস্ট করে দেখে নিন Rules Playground-এ।</p></div>
     </div>
 
     <div class="card" style="margin-top:14px">
@@ -1538,10 +1631,6 @@ function renderSettings(){
     </div>
   `;
   renderBranchChips();
-}
-function toggleRulesBox(){
-  const b=document.getElementById('rulesbox');
-  b.style.display=b.style.display==='none'?'block':'none';
 }
 function toggleAdminFormFields(){
   const role=document.getElementById('a-role').value;
