@@ -906,7 +906,7 @@ function homeHeroHtml(c,e){
   const empty=(data.teachers.length===0&&data.classes.length===0);
   return `<div class="hero"><div class="hero-g">${g}${nm?', '+esc(nm):''}</div><div class="hero-s">${sum}</div></div>
   ${empty?`<div class="card onboard"><h3>শুরু করুন</h3><p class="hint">এখনো কোনো শিক্ষক বা ক্লাস যোগ করা হয়নি। আগে শিক্ষক, তারপর ক্লাস যোগ করলে রিমাইন্ডার পাঠানো যাবে।</p>
-    <div class="actions" style="padding-left:0"><button class="btn primary" onclick="gotoTab('teachers')">👨‍🏫 শিক্ষক যোগ করুন</button><button class="btn soft" onclick="gotoTab('classes')">📖 ক্লাস যোগ করুন</button><button class="btn soft" onclick="openImportModal('both')">⇩ ক্লাস + পরীক্ষা ইম্পোর্ট</button><button class="btn soft" onclick="gotoTab('settings')">⇧ ব্যাকআপ পুনরুদ্ধার</button></div></div>`:''}`;
+    <div class="actions" style="padding-left:0"><button class="btn primary" onclick="gotoTab('teachers')">👨‍🏫 শিক্ষক যোগ করুন</button><button class="btn soft" onclick="gotoTab('classes')">📖 ক্লাস যোগ করুন</button><button class="btn soft" onclick="gotoTab('settings')">⇩ ফাইল থেকে ইম্পোর্ট (সেটিংস)</button></div></div>`:''}`;
 }
 function gotoTab(t){ const b=document.querySelector('#tabsbar button[data-tab="'+t+'"]'); if(b) b.click(); }
 function renderHome(){
@@ -982,8 +982,6 @@ function renderClasses(){
       </div>
       ${canManage?`<div class="toolbar">
         <button class="btn primary" onclick="openClassModal()">＋ ক্লাস যোগ</button>
-        <button class="btn soft" onclick="openImportModal('class')">⇩ বাল্ক ইম্পোর্ট</button>
-        <button class="btn primary" onclick="openImportModal('both')">⇩ ক্লাস + পরীক্ষা একসাথে</button>
         <button class="btn soft" onclick="openBatchTimeModal()">🕐 ব্যাচের সব ক্লাসে একই সময় বসান</button>
         <button class="btn soft" onclick="printRoutine()">🖨️ প্রিন্ট / PDF</button>
       </div>`:`<div class="toolbar"><button class="btn soft" onclick="printRoutine()">🖨️ প্রিন্ট / PDF</button></div>`}
@@ -1145,8 +1143,6 @@ function renderExams(){
       </div>
       ${canManage?`<div class="toolbar">
         <button class="btn primary" onclick="openExamModal()">＋ পরীক্ষা যোগ</button>
-        <button class="btn soft" onclick="openImportModal('exam')">⇩ বাল্ক ইম্পোর্ট</button>
-        <button class="btn primary" onclick="openImportModal('both')">⇩ ক্লাস + পরীক্ষা একসাথে</button>
       </div>`:''}
       <p class="hint">পরীক্ষার জন্য শিক্ষকদের রিমাইন্ডার পাঠানো হয় না — এটা শুধু তথ্যের জন্য তালিকাভুক্ত থাকে।</p>
       <div class="table-wrap"><table>
@@ -1214,7 +1210,7 @@ function openImportModal(kind){
   const formats={
     class:'তারিখ(YYYY-MM-DD), বিষয়, লেকচার, সময়(ঐচ্ছিক), ব্যাচ(ঐচ্ছিক), শাখা(ঐচ্ছিক)',
     exam:'তারিখ(YYYY-MM-DD), বিষয়, পরীক্ষার নাম, শাখা(ঐচ্ছিক)',
-    both:'তারিখ(YYYY-MM-DD), বিষয়, লেকচার, পরীক্ষার নাম, সময়(ঐচ্ছিক), ব্যাচ(ঐচ্ছিক), শাখা(ঐচ্ছিক)<br>লেকচার থাকলে ক্লাস, পরীক্ষার নাম থাকলে পরীক্ষা তৈরি হবে (দুটোই থাকলে দুটোই)। যেটা নেই সেই ঘর ফাঁকা রাখুন।',
+    both:'তারিখ(YYYY-MM-DD), বিষয়, লেকচার, পরীক্ষার নাম, সময়(ঐচ্ছিক), ব্যাচ(ঐচ্ছিক), শাখা(ঐচ্ছিক)<br>লেকচার থাকলে ক্লাস, পরীক্ষার নাম থাকলে পরীক্ষা তৈরি হবে। ঘরে \"Test\"/\"Exam\" লেখা থাকলে সেটা পরীক্ষা ধরা হয়, ছুটি (Puja/Holiday) বাদ যায়।',
     teacher:'নাম, বিষয়, লেকচার রেঞ্জ লেবেল, রেঞ্জ শুরু, রেঞ্জ শেষ, মোবাইল, Telegram(ঐচ্ছিক), শাখা(ঐচ্ছিক)'
   };
   const examples={
@@ -1231,6 +1227,7 @@ function openImportModal(kind){
       <label class="btn primary" style="cursor:pointer">📎 Excel / PDF / CSV আপলোড<input type="file" id="m-file" accept=".xlsx,.xls,.csv,.pdf,.txt" style="display:none" onchange="handleImportFile(event)"></label>
       <button class="btn soft" onclick="downloadImportXlsx('${kind}')">📊 Excel টেমপ্লেট</button>
     </div>
+    ${kind!=='teacher'?`<label class="hint" style="display:flex;align-items:center;gap:8px;margin:0 0 6px">বছর (ফাইলের তারিখে বছর না থাকলে, যেমন "20-Aug"): <input id="m-year" type="number" min="2000" max="2100" value="${new Date().getFullYear()}" style="width:90px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:inherit"></label>`:''}
     <p class="hint" id="m-fileinfo" style="margin:0 0 10px">ফাইলের প্রথম সারিতে কলামের নাম (তারিখ, বিষয়…) থাকলে কলামের ক্রম যাই হোক চলবে। একাধিক শিট থাকলে সবগুলো পড়া হবে। PDF-এ লেখা টেবিল আকারে থাকতে হবে (স্ক্যান করা ছবি পড়া যায় না)।</p>
     <div class="field"><textarea id="m-bulk" placeholder="${examples[kind]}"></textarea></div>
     <div id="import-preview"></div>
@@ -1284,35 +1281,38 @@ async function getPdfJs(){
 const IMPORT_COLS={
   class:['date','subject','lecture','time','batch','branch'],
   exam:['date','subject','examName','branch'],
-  both:['date','subject','lecture','examName','time','batch','branch'],
+  both:['date','subject','lecture','examName','time','batch','branch','comment'],
   teacher:['name','subject','rangeLabel','rangeFrom','rangeTo','phone','telegram','branch']
 };
 const IMPORT_HEADS={
   class:['তারিখ','বিষয়','লেকচার','সময়','ব্যাচ','শাখা'],
   exam:['তারিখ','বিষয়','পরীক্ষার নাম','শাখা'],
-  both:['তারিখ','বিষয়','লেকচার','পরীক্ষার নাম','সময়','ব্যাচ','শাখা'],
+  both:['তারিখ','বিষয়','লেকচার','পরীক্ষার নাম','সময়','ব্যাচ','শাখা','মন্তব্য'],
   teacher:['নাম','বিষয়','লেকচার রেঞ্জ লেবেল','রেঞ্জ শুরু','রেঞ্জ শেষ','মোবাইল','Telegram','শাখা']
 };
 const IMPORT_SYN={
   date:/তারিখ|date/i, subject:/বিষয়|subject/i, lecture:/লেকচার|lecture/i, time:/সময়|time/i,
   batch:/ব্যাচ|batch/i, branch:/শাখা|branch/i, examName:/পরীক্ষ|exam/i,
   rangeLabel:/রেঞ্জ.*লেবেল|range.*label|লেবেল/i, rangeFrom:/শুরু|from/i, rangeTo:/শেষ|to$/i,
+  comment:/মন্তব্য|comment|remark|নোট|note/i,
   name:/নাম|name|শিক্ষক/i, phone:/মোবাইল|ফোন|phone|mobile/i, telegram:/telegram|টেলিগ্রাম/i
 };
 function bnToEn(v){ return String(v).replace(/[০-৯]/g,d=>'০১২৩৪৫৬৭৮৯'.indexOf(d)); }
 function pad2(n){ return String(n).padStart(2,'0'); }
-function normDate(v){
+const MON3=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+function normDate(v,yr){
   if(v instanceof Date){ const d=new Date(v.getTime()+12*3600*1000); return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
   if(typeof v==='number' && v>20000 && v<80000){ const d=new Date(Math.round((v-25569)*86400*1000)); return d.getUTCFullYear()+'-'+pad2(d.getUTCMonth()+1)+'-'+pad2(d.getUTCDate()); }
   const t=bnToEn(v).trim(); let m;
   if((m=t.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/))) return m[1]+'-'+pad2(m[2])+'-'+pad2(m[3]);
   if((m=t.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{2,4})$/))){ const y=m[3].length===2?'20'+m[3]:m[3]; return y+'-'+pad2(m[2])+'-'+pad2(m[1]); }
-  if((m=t.match(/^(\d{1,2})\s+([A-Za-z]{3})[a-z]*\.?,?\s+(\d{4})$/))){
-    const mi=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(m[2].toLowerCase());
-    if(mi>=0) return m[3]+'-'+pad2(mi+1)+'-'+pad2(m[1]);
+  if((m=t.match(/^(\d{1,2})[-\s\/]([A-Za-z]{3})[a-z]*\.?,?[-\s\/]*(\d{2,4})?$/))){
+    const mi=MON3.indexOf(m[2].toLowerCase());
+    if(mi>=0){ const y=m[3]?(m[3].length===2?'20'+m[3]:m[3]):(yr||new Date().getFullYear()); return y+'-'+pad2(mi+1)+'-'+pad2(m[1]); }
   }
   return t;
 }
+function importYear(){ const el=document.getElementById('m-year'); const v=el?parseInt(el.value,10):0; return (v>2000&&v<2100)?v:new Date().getFullYear(); }
 // হেডার সারি চিনে কলামের ক্রম বের করা; হেডার না হলে null
 function detectHeader(row,kind){
   const keys=IMPORT_COLS[kind], map={}, used={};
@@ -1322,8 +1322,9 @@ function detectHeader(row,kind){
   });
   return (Object.keys(map).length>=2 && (kind==='teacher'?('name' in map):('date' in map)))?map:null;
 }
-function tableToLines(rows,kind){
-  const keys=IMPORT_COLS[kind], out=[]; let map=null;
+function tableToLines(rows,kind,yr){
+  const keys=IMPORT_COLS[kind], out=[]; let map=null, lastM=0;
+  yr=yr||new Date().getFullYear();
   rows.forEach(r=>{
     const row=r.map(c=>(c==null?'':(c instanceof Date?c:(typeof c==='number'?c:String(c).trim()))));
     if(!row.some(c=>c!=='')) return;
@@ -1332,11 +1333,16 @@ function tableToLines(rows,kind){
     const cells=keys.map((k,i)=>{
       const idx=map?(k in map?map[k]:-1):i;
       let v=idx>=0&&idx<row.length?row[idx]:'';
-      if(k==='date') v=normDate(v);
-      else if(v instanceof Date) v=normDate(v);
+      if(k==='date'){
+        // "20-Aug" (বছর নেই): মাস কমে গেলে (ডিসেম্বর→জানুয়ারি) বছর +১
+        const m=(typeof v==='string')?bnToEn(v).trim().match(/^(\d{1,2})[-\s\/]([A-Za-z]{3})[a-z]*\.?$/):null;
+        if(m){ const mi=MON3.indexOf(m[2].toLowerCase())+1; if(mi){ if(lastM&&mi<lastM) yr++; lastM=mi; v=m[1]+' '+m[2]+' '+yr; } }
+        v=normDate(v,yr);
+      }else if(v instanceof Date) v=normDate(v);
       return String(v).replace(/[\t\r\n]+/g,' ').trim();
     });
-    if(cells.every(c=>c==='')) return;
+    if(kind!=='teacher'){ if(!cells[0]) return; if(cells.slice(1).every(c=>c==='')) return; }  // শিরোনাম/ফাঁকা দিন বাদ
+    else if(cells.every(c=>c==='')) return;
     out.push(cells.join('\t').replace(/\t+$/,''));
   });
   return out;
@@ -1344,7 +1350,7 @@ function tableToLines(rows,kind){
 async function pdfToRows(file,kind){
   const pdfjs=await getPdfJs();
   const pdf=await pdfjs.getDocument({data:await file.arrayBuffer()}).promise;
-  const rows=[]; let anchors=null;
+  const rows=[]; let anchors=null, dateIdx=null;
   for(let n=1;n<=pdf.numPages;n++){
     const items=(await (await pdf.getPage(n)).getTextContent()).items.filter(it=>it.str&&it.str.trim()!=='');
     const lines=[];
@@ -1354,6 +1360,7 @@ async function pdfToRows(file,kind){
       if(!ln){ ln={y,its:[]}; lines.push(ln); }
       ln.its.push({x,w:it.width||0,t:it.str});
     });
+    const pr=[];
     lines.sort((a,b)=>b.y-a.y).forEach(ln=>{
       ln.its.sort((a,b)=>a.x-b.x);
       const cells=[]; let cur=null, curX=0, endX=0;
@@ -1363,8 +1370,8 @@ async function pdfToRows(file,kind){
         endX=it.x+it.w;
       });
       if(cur!==null) cells.push({t:cur.trim(),x:curX});
-      const texts=cells.map(c=>c.t);
-      if(detectHeader(texts,kind)){ anchors=cells.map(c=>c.x); rows.push(texts); return; }
+      const texts=cells.map(c=>c.t), h=detectHeader(texts,kind);
+      if(h){ anchors=cells.map(c=>c.x); dateIdx=('date' in h)?h.date:null; pr.push({y:ln.y,out:texts,hdr:true}); return; }
       if(anchors){
         // ফাঁকা ঘর থাকলেও কলাম ঠিক রাখতে: প্রতিটি লেখা হেডারের সবচেয়ে কাছের কলামে বসানো হয়
         const out=anchors.map(()=>'');
@@ -1372,9 +1379,21 @@ async function pdfToRows(file,kind){
           let best=0; anchors.forEach((ax,i)=>{ if(Math.abs(ax-c.x)<Math.abs(anchors[best]-c.x)) best=i; });
           out[best]=out[best]?out[best]+' '+c.t:c.t;
         });
-        rows.push(out);
-      }else rows.push(texts);
+        pr.push({y:ln.y,out});
+      }else pr.push({y:ln.y,out:texts,pre:true});
     });
+    if(dateIdx!==null){
+      // তারিখহীন লাইন = আগের/পরের সারির ভেঙে যাওয়া লেখা → সবচেয়ে কাছের তারিখওয়ালা সারিতে জোড়া লাগাও
+      const dated=pr.filter(r=>!r.hdr&&!r.pre&&r.out[dateIdx]);
+      pr.forEach(r=>{
+        if(r.hdr||r.pre||r.out[dateIdx]||!r.out.some(c=>c)||!dated.length) return;
+        let best=null,bd=1e9; dated.forEach(d=>{const v=Math.abs(d.y-r.y); if(v<bd){bd=v;best=d;}});
+        if(bd>30) return;
+        r.out.forEach((c,i)=>{ if(!c) return; best.out[i]=best.out[i]?(r.y>best.y?c+' '+best.out[i]:best.out[i]+' '+c):c; });
+        r.dead=true;
+      });
+    }
+    pr.forEach(r=>{ if(!r.dead) rows.push(r.out); });
   }
   return rows;
 }
@@ -1389,10 +1408,10 @@ async function handleImportFile(ev){
       const wb=/\.csv$/.test(name)?X.read(await f.text(),{type:'string',cellDates:true}):X.read(await f.arrayBuffer(),{type:'array',cellDates:true});
       wb.SheetNames.forEach(sn=>{
         const rows=X.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,defval:''});
-        lines.push(...tableToLines(rows,importKind));
+        lines.push(...tableToLines(rows,importKind,importYear()));
       });
     }else if(/\.pdf$/.test(name)){
-      lines=tableToLines(await pdfToRows(f,importKind),importKind);
+      lines=tableToLines(await pdfToRows(f,importKind),importKind,importYear());
     }else{
       lines=(await f.text()).split('\n').map(l=>l.trim()).filter(Boolean);
     }
@@ -1425,20 +1444,36 @@ function ensureBranchName(name){
   const myBranches=allowedBranches();
   return b || myBranches[0] || data.branches[0];
 }
+const TESTRX=/test|exam|পরীক্ষা|final|quiz/i, HOLRX=/puja|পূজা|holiday|ছুটি|vacation|\beid\b|ঈদ/i, ALLSUB='সকল বিষয়';
+// রুটিন ফাইলে "Weekly Test-01", "DU Model Test" ইত্যাদি অনেক সময় বিষয়/লেকচার ঘরে থাকে → সেগুলো পরীক্ষা ধরা হয়; ছুটি (Puja/Holiday) বাদ
+function smartBoth(x){
+  if(HOLRX.test([x.subject,x.lecture,x.examName].join(' '))) return null;
+  let {subject,lecture,examName,comment}=x;
+  if(!examName && TESTRX.test(subject)){
+    examName=subject; subject='';
+    if(lecture){ if(TESTRX.test(lecture)) examName+=' — '+lecture; else comment=comment?lecture+' — '+comment:lecture; lecture=''; }
+  }else if(!examName && TESTRX.test(lecture)){ examName=lecture; lecture=''; }
+  if(examName && comment) examName+=' ('+comment+')';
+  if(!subject && (lecture||examName)) subject=ALLSUB;
+  return {...x,subject,lecture,examName};
+}
 function previewBulk(){
   const lines=document.getElementById('m-bulk').value.split('\n').map(l=>l.trim()).filter(Boolean);
   const rows=[];
   lines.forEach(line=>{
     const parts=(line.includes('\t')?line.split('\t'):line.split(',')).map(p=>p.trim());
-    if(importKind!=='teacher' && parts[0]) parts[0]=normDate(parts[0]);
+    if(importKind!=='teacher' && parts[0]) parts[0]=normDate(parts[0],importYear());
     let ok=true,reason='',rec={};
     if(importKind==='both'){
-      const [date,subject,lecture,examName,time,batch,branch]=parts;
-      if(!date||!subject||!/^\d{4}-\d{2}-\d{2}$/.test(date)){ok=false;reason='তারিখ/বিষয় ঠিক নেই';}
-      else if(!lecture&&!examName){ok=false;reason='লেকচার বা পরীক্ষার নাম অন্তত একটি দিন';}
-      else if(lecture&&!hasPerm('classes')){ok=false;reason='ক্লাস যোগের অনুমতি নেই';}
-      else if(examName&&!hasPerm('exams')){ok=false;reason='পরীক্ষা যোগের অনুমতি নেই';}
-      rec={date,subject,lecture:lecture||'',examName:examName||'',time:time||'',batch:batch||'',branch:ensureBranchName(branch),creates:(lecture&&examName)?'ক্লাস + পরীক্ষা':(lecture?'ক্লাস':'পরীক্ষা')};
+      const [date,subject,lecture,examName,time,batch,branch,comment]=parts;
+      const x0={date,subject:subject||'',lecture:lecture||'',examName:examName||'',time:time||'',batch:batch||'',comment:comment||''};
+      const x=smartBoth(x0), y=x||x0;
+      if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)){ok=false;reason='তারিখ ঠিক নেই';}
+      else if(!x){ok=false;reason='ছুটির দিন — বাদ';}
+      else if(!y.lecture&&!y.examName){ok=false;reason='লেকচার বা পরীক্ষার নাম অন্তত একটি দিন';}
+      else if(y.lecture&&!hasPerm('classes')){ok=false;reason='ক্লাস যোগের অনুমতি নেই';}
+      else if(y.examName&&!hasPerm('exams')){ok=false;reason='পরীক্ষা যোগের অনুমতি নেই';}
+      rec={date,subject:y.subject,lecture:y.lecture,examName:y.examName,time:y.time,batch:y.batch,branch:ensureBranchName(branch),creates:(y.lecture&&y.examName)?'ক্লাস + পরীক্ষা':(y.lecture?'ক্লাস':(y.examName?'পরীক্ষা':'—'))};
     }else if(importKind==='exam'){
       const [date,subject,examName,branch]=parts;
       if(!date||!subject||!examName||!/^\d{4}-\d{2}-\d{2}$/.test(date)){ok=false;reason='তারিখ/বিষয়/পরীক্ষার নাম ঠিক নেই';}
@@ -1615,6 +1650,12 @@ function renderSettings(){
         <input class="grow" id="s-newbranch" placeholder="নতুন শাখার নাম">
         <button class="btn primary" onclick="addBranch()">＋ শাখা যোগ করুন</button>
       </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3 style="margin-bottom:12px">📥 ক্লাস ও পরীক্ষা ইম্পোর্ট</h3>
+      <p class="hint">Excel, PDF বা CSV ফাইল থেকে ক্লাস রুটিন ও পরীক্ষার তালিকা <b>একসাথে</b> যোগ করুন। ইম্পোর্টের আগে প্রিভিউ দেখে নিশ্চিত করতে পারবেন।</p>
+      <button class="btn primary" onclick="openImportModal('both')">⇩ ফাইল থেকে ইম্পোর্ট করুন</button>
     </div>
 
     <div class="card" style="margin-top:14px">
