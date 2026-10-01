@@ -240,6 +240,49 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   .hero-g{font-size:21px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ===== ক্লাস কার্ড, লিস্ট, মোডাল ===== */
+.tlist{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);display:flex;flex-direction:column;gap:8px}
+.trow2,.prow{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}
+.prow{cursor:pointer}.prow input{width:18px;height:18px;accent-color:var(--accent)}
+.avatar.sm{width:34px;height:34px;font-size:14px;flex:none}
+.tinfo{display:flex;flex-direction:column;min-width:0;flex:1}.tinfo b{font-size:14px}
+.tinfo span{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sug{font-style:normal;font-size:10.5px;background:rgba(239,125,26,.15);color:var(--accent);padding:1px 7px;border-radius:99px;margin-left:4px}
+.tbtns{display:flex;gap:4px;flex:none}
+.ibtn{width:36px;height:36px;border:1px solid var(--line);background:var(--panel);border-radius:11px;font-size:15px;cursor:pointer;transition:transform .08s}
+.ibtn:active{transform:scale(.92)}
+.btn.sm{padding:8px 12px;font-size:13px;align-self:flex-start}
+.chipbtn{border:1px solid var(--line);background:var(--panel2);color:inherit;border-radius:99px;padding:5px 11px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.plist{display:flex;flex-direction:column;gap:8px;max-height:48vh;overflow:auto}
+.clist{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.crow{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:16px;background:var(--panel2)}
+.crow.istoday{border-color:var(--accent);box-shadow:0 0 0 2px rgba(239,125,26,.18)}
+.crow.conflictrow{border-color:#d93025}
+.cdate{width:52px;flex:none;text-align:center;border-radius:12px;background:var(--panel);border:1px solid var(--line);padding:6px 0;line-height:1.15}
+.cdate b{display:block;font-size:20px}.cdate span{font-size:11.5px;color:var(--muted)}.cdate small{display:block;font-size:10.5px;color:var(--accent);font-weight:700}
+.cbody{flex:1;min-width:0}.cmain{font-weight:800;font-size:15px}
+.lecchip{font-size:11.5px;font-weight:700;color:var(--muted);margin-left:4px}
+.cmeta{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:3px;font-size:12px;color:var(--muted)}
+.cact{display:flex;flex:none}.cact .rowbtn{font-size:16px;padding:6px 7px}
+.qchips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.qchips button{border:1px solid var(--line);background:var(--panel2);color:inherit;border-radius:99px;padding:6px 12px;font:inherit;font-size:12.5px;cursor:pointer}
+.chkrow{display:flex;gap:8px;flex-wrap:wrap}
+.chk{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel2);border-radius:99px;padding:7px 13px;font-size:13px;cursor:pointer}
+.chk input{accent-color:var(--accent)}
+.stepper{display:flex;gap:8px}.stepper input{text-align:center;flex:1}
+.stepper button{width:44px;border:1px solid var(--line);background:var(--panel2);color:inherit;border-radius:12px;font-size:20px;cursor:pointer}
+.shprev{border:1px solid var(--line);border-radius:14px;padding:8px 12px;background:var(--panel2);font-size:13px;display:flex;flex-direction:column;gap:4px}
+.shprev span{color:var(--muted)}
+@media(max-width:420px){.trow2{flex-wrap:wrap}.tbtns{width:100%;justify-content:flex-end}}
+
+.rtcard{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;border:1px solid rgba(239,125,26,.4);background:linear-gradient(135deg,rgba(239,125,26,.12),transparent 70%)}
+.rtic{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#ef7d1a,#f59a45);display:grid;place-items:center;font-size:20px;flex:none}
+.rtt{flex:1;min-width:180px;display:flex;flex-direction:column}.rtt b{font-size:15px}.rtt span{font-size:12.5px;color:var(--muted)}
+.rtnav{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:center;margin-bottom:10px}
+.rtprev{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:10px 0;background:#fff}
+.rtprev canvas{display:block;width:100%;height:auto}
+.rtdet{margin:6px 0 4px}.rtdet summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px}
 </style>
 </head>
 <body>
@@ -319,6 +362,7 @@ const DEFAULT_TEMPLATES={
  upcoming:"আসসালামু আলাইকুম {teacher} স্যার,\n📅 ক্লাস শিডিউল স্মরণবার্তা\nআগামী {date} তারিখে Business Titan অনলাইন শাখায় আপনার {subject} ক্লাসের লেকচার {lecture} নির্ধারিত রয়েছে।{timeline}\nঅনুগ্রহ করে নিজের সময়সূচিতে রেখে দেওয়ার অনুরোধ রইলো।\n📍 ঠিকানাঃ {address}{sharelinkline}\n\nধন্যবাদান্তে,\n{org}"
 };
 
+DEFAULT_TEMPLATES.change="আসসালামু আলাইকুম {teacher} স্যার,\n🔔 ক্লাসের সময়সূচি পরিবর্তন\n{subject} বিষয়ের লেকচার {lecture} এর ক্লাস আগে {oldschedule} ছিল। নতুন সময়সূচিঃ\n📅 {date}{timeline}\nঅনুগ্রহ করে নতুন সময়সূচি অনুযায়ী প্রস্তুত থাকবেন।\n📍 ঠিকানাঃ {address}\nধন্যবাদ।\n{org}";
 const TEMPLATE_VERSION=7;
 const OLD_DEFAULT_TEMPLATES={
  today:"আসসালামু আলাইকুম {teacher},\n\nআজ ({date}) Business Titan অনলাইন শাখায় আপনার {subject} ক্লাস (লেকচার {lecture}) নির্ধারিত আছে।{note}\n\nসময়মতো ক্লাসে যুক্ত হওয়ার জন্য বিনীত অনুরোধ রইলো।\n\nধন্যবাদান্তে,\n{org}",
@@ -371,7 +415,7 @@ function migrate(raw){
   if(!raw.settings.templates) raw.settings.templates={...DEFAULT_TEMPLATES};
   if(!raw.settings.address) raw.settings.address='ফার্মগেট, ঢাকা';
   if(!raw.exams) raw.exams=[];
-  raw.teachers.forEach(t=>{if(!t.branch) t.branch=raw.branches[0];});
+  raw.teachers.forEach(t=>{if(!t.branch) t.branch=raw.branches[0]; if(!t.branches||!t.branches.length) t.branches=[t.branch];});
   raw.classes.forEach(c=>{if(!c.branch) c.branch=raw.branches[0]; if(c.time===undefined) c.time=''; if(c.batch===undefined) c.batch=''; delete c.note;});
   raw.exams.forEach(e=>{if(!e.branch) e.branch=raw.branches[0];});
   raw.admins.forEach(a=>{if(!a.permissions) a.permissions={classes:false,exams:false,teachers:false,reminders:false}; if(!a.branches) a.branches=[]; if(!a.id) a.id=emailKey(a.email);});
@@ -626,8 +670,8 @@ function syncPublicMirror(){
   publicSyncTimer=setTimeout(()=>{
     const out={};
     data.teachers.forEach(t=>{
-      const upcoming=data.classes.filter(c=>c.subject===t.subject && c.branch===t.branch && c.date>=todayISO()).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,30);
-      out[t.id]={name:t.name,subject:t.subject,branch:t.branch,classes:upcoming.map(c=>({date:c.date,lecture:c.lecture,time:c.time,batch:c.batch}))};
+      const upcoming=data.classes.filter(c=>(Array.isArray(c.teacherIds)?c.teacherIds.includes(t.id):(c.subject===t.subject && tBranches(t).includes(c.branch))) && c.date>=todayISO()).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,30);
+      out[t.id]={name:t.name,subject:t.subject,branch:tBranches(t).join(' / '),classes:upcoming.map(c=>({date:c.date,lecture:c.lecture,time:c.time,batch:c.batch}))};
     });
     fbRefs.public.set(out).catch(()=>{});
   },1200);
@@ -659,7 +703,14 @@ function formatBnDateTime(isoStr){const d=new Date(isoStr);return `${bn(d.getDat
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),2400);}
 
 function subjectsList(){return [...new Set(data.teachers.map(t=>t.subject))];}
-function teachersFor(subject,branch){return data.teachers.filter(t=>t.subject===subject && (!branch||t.branch===branch));}
+function tBranches(t){ return (t.branches&&t.branches.length)?t.branches:(t.branch?[t.branch]:[]); }
+function teacherOf(id){ return data.teachers.find(t=>t.id===id); }
+// ক্লাসের শিক্ষক: নির্বাচিত তালিকা (একাধিক হতে পারে); না থাকলে স্বয়ংক্রিয় পরামর্শ
+function classTeachers(cls){
+  if(Array.isArray(cls.teacherIds)) return cls.teacherIds.map(teacherOf).filter(Boolean);
+  const sg=suggestTeacher(cls.subject,cls.lecture,cls.branch); return sg?[sg]:[];
+}
+function teachersFor(subject,branch){return data.teachers.filter(t=>t.subject===subject && (!branch||tBranches(t).includes(branch)));}
 function suggestTeacher(subject,lecture,branch){
   let cands=teachersFor(subject,branch);
   if(cands.length===0) cands=teachersFor(subject,null);
@@ -705,10 +756,7 @@ function findConflicts(days){
     const todays=data.classes.filter(c=>c.date===iso && c.time);
     const byTeacher={};
     todays.forEach(c=>{
-      const t=suggestTeacher(c.subject,c.lecture,c.branch);
-      if(!t) return;
-      const key=t.id+'|'+c.time;
-      (byTeacher[key]=byTeacher[key]||[]).push(c);
+      classTeachers(c).forEach(t=>{ const key=t.id+'|'+c.time; (byTeacher[key]=byTeacher[key]||[]).push(c); });
     });
     Object.entries(byTeacher).forEach(([key,list])=>{
       if(list.length>1){
@@ -757,7 +805,7 @@ function teacherShareUrl(teacherId){
   const base=window.location.origin+window.location.pathname;
   return `${base}?u=${encodeURIComponent(currentUser?currentUser.uid:'')}&share=${teacherId}`;
 }
-function buildMessage(kind,cls,teacher){
+function buildMessage(kind,cls,teacher,extra){
   const tpl=data.settings.templates[kind]||DEFAULT_TEMPLATES[kind];
   const ctx={
     teacher: teacher?teacher.name:'',
@@ -767,7 +815,9 @@ function buildMessage(kind,cls,teacher){
     timeline: cls.time ? `\n🕐 সময়ঃ ${cls.time}` : '',
     address: data.settings.address || '',
     sharelinkline: (FIREBASE_ENABLED && teacher) ? `\n🔗 আপনার পূর্ণ রুটিনঃ ${teacherShareUrl(teacher.id)}` : '',
-    org: data.settings.orgName
+    org: data.settings.orgName,
+    oldschedule: '',
+    ...(extra||{})
   };
   const msg=fillTemplate(tpl,ctx);
   return msg.replace(/[ \t]{2,}/g,' ').replace(/^ +| +$/gm,'');
@@ -803,11 +853,8 @@ function branchOptionsHtml(selected,list){
 /* ---------- class reminder card (Home) ---------- */
 function classCardHtml(cls, kind, isConflict){
   const isToday = cls.date===todayISO();
-  const canSend = hasPerm('reminders');
-  const sug=suggestTeacher(cls.subject,cls.lecture,cls.branch);
-  const opts=data.teachers.filter(t=>t.subject===cls.subject && t.branch===cls.branch);
-  const others=data.teachers.filter(t=>!(t.subject===cls.subject && t.branch===cls.branch));
-  const selId='sel_'+cls.id+'_'+kind;
+  const canSend = hasPerm('reminders'), canEdit = hasPerm('classes');
+  const tl=classTeachers(cls);
   const logged=loggedToday(cls.id);
   return `<div class="entrycard ${isToday?'istoday':''} ${isConflict?'conflict':''}">
     <div class="top">
@@ -820,32 +867,29 @@ function classCardHtml(cls, kind, isConflict){
       </div></div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
         <span class="datepill">${formatBn(cls.date)}</span>
+        ${canEdit?`<button class="chipbtn" onclick="openReschedule('${cls.id}')">📅 তারিখ/সময় বদলান</button>`:''}
         ${logged?`<span class="sentbadge">পাঠানো হয়েছে ✓</span>`:''}
       </div>
     </div>
-    ${canSend?`
-    <div class="teacherrow">
-      <select id="${selId}">
-        <option value="">— শিক্ষক নির্বাচন করুন —</option>
-        ${opts.map(t=>`<option value="${t.id}" ${sug&&sug.id===t.id?'selected':''}>${esc(t.name)} (${esc(t.rangeLabel)})</option>`).join('')}
-        ${others.length?`<option disabled>──────</option>`+others.map(t=>`<option value="${t.id}">${esc(t.name)} — ${esc(t.subject)}, ${esc(t.branch)}</option>`).join(''):''}
-      </select>
-    </div>
-    <div class="actions">
-      <button class="btn wa" onclick="sendReminder('${cls.id}','${kind}','${selId}','wa')">🟢 WhatsApp</button>
-      <button class="btn tg" onclick="sendReminder('${cls.id}','${kind}','${selId}','tgapp')">🔵 Telegram অ্যাপ</button>
-      <button class="btn tg" onclick="sendReminder('${cls.id}','${kind}','${selId}','tgweb')">🌐 Telegram ওয়েব</button>
-      <button class="btn copy" onclick="sendReminder('${cls.id}','${kind}','${selId}','copy')">⧉ কপি</button>
+    ${canSend?`<div class="tlist">
+      ${tl.map(t=>teacherSendRow(cls.id,kind,t)).join('')||'<div class="hint" style="margin:4px 0 8px">কোনো শিক্ষক নির্বাচিত নেই</div>'}
+      <button class="btn soft sm" onclick="openTeacherPicker('${cls.id}')">👥 শিক্ষক নির্বাচন (একাধিক হতে পারে)</button>
     </div>`:''}
   </div>`;
 }
-function sendReminder(classId,kind,selId,mode){
+function teacherSendRow(classId,kind,t){
+  const b=(m,ic,ti)=>`<button class="ibtn" title="${ti}" onclick="sendReminder('${classId}','${kind}','${t.id}','${m}')">${ic}</button>`;
+  return `<div class="trow2"><div class="avatar sm">${esc(t.name.slice(0,1))}</div>
+    <div class="tinfo"><b>${esc(t.name)}</b><span>${esc(t.rangeLabel||t.subject)} • ${esc(tBranches(t).join(' / '))}</span></div>
+    <div class="tbtns">${b('wa','🟢','WhatsApp')}${b('tgapp','🔵','Telegram অ্যাপ')}${b('tgweb','🌐','Telegram ওয়েব')}${b('copy','⧉','কপি')}</div></div>`;
+}
+let lastChange=null;
+function sendReminder(classId,kind,teacherId,mode){
   if(!hasPerm('reminders')){toast('রিমাইন্ডার পাঠানোর অনুমতি নেই');return;}
   const cls=data.classes.find(c=>c.id===classId);
   if(!cls) return;
-  const teacherId=document.getElementById(selId).value;
   const teacher=data.teachers.find(t=>t.id===teacherId);
-  const msg=buildMessage(kind,cls,teacher);
+  const msg=buildMessage(kind,cls,teacher,kind==='change'?{oldschedule:(lastChange&&lastChange.id===cls.id)?lastChange.text:''}:undefined);
   if(mode==='wa'){
     if(!teacher||!teacher.phone){toast('এই শিক্ষকের মোবাইল নম্বর নেই — সেটিংস থেকে যোগ করুন');return;}
     window.open(waLink(teacher.phone,msg),'_blank');
@@ -930,6 +974,7 @@ function renderHome(){
       <select id="home-branch" class="grow"><option value="">সব শাখা (আমার আওতাধীন)</option>${branchOptionsHtml(homeBranch,myBranches)}</select>
     </div>
     ${homeHeroHtml(todayClasses.length,todayExams.length)}
+    ${rtHomeCardHtml()}
     ${warnHtml}
     <div class="grid g4">
       <div class="card stat t-o"><span class="sico">📖</span><div class="num">${bn(todayClasses.length)}</div><div class="lbl">আজকের ক্লাস</div></div>
@@ -982,21 +1027,250 @@ function renderClasses(){
       </div>
       ${canManage?`<div class="toolbar">
         <button class="btn primary" onclick="openClassModal()">＋ ক্লাস যোগ</button>
+        <button class="btn soft" onclick="openRoutineImage()">🖼️ রুটিন ছবি</button>
+        <button class="btn soft" onclick="openShiftModal()">📅 তারিখ সরান</button>
         <button class="btn soft" onclick="openBatchTimeModal()">🕐 ব্যাচের সব ক্লাসে একই সময় বসান</button>
         <button class="btn soft" onclick="printRoutine()">🖨️ প্রিন্ট / PDF</button>
       </div>`:`<div class="toolbar"><button class="btn soft" onclick="printRoutine()">🖨️ প্রিন্ট / PDF</button></div>`}
-      <div class="table-wrap"><table>
-        <thead><tr><th>তারিখ</th><th>বিষয়</th><th>লেকচার</th><th>সময়</th><th>ব্যাচ</th><th>শাখা</th>${canManage?'<th></th>':''}</tr></thead>
-        <tbody>${rows.length?rows.map(c=>`<tr class="${c.date===t?'istoday':''} ${conflictIds.has(c.id)?'conflictrow':''}">
-          <td>${formatBn(c.date)}</td><td>${esc(c.subject)}${conflictIds.has(c.id)?' ⚠️':''}</td><td>${esc(c.lecture)}</td><td>${esc(c.time)||'—'}</td><td>${esc(c.batch)||'—'}</td><td>${esc(c.branch)}</td>
-          ${canManage?`<td><button class="rowbtn" onclick="openClassModal('${c.id}')">✎</button><button class="rowbtn" onclick="deleteClass('${c.id}')">🗑</button></td>`:''}
-        </tr>`).join(''):`<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">কোনো ক্লাস পাওয়া যায়নি</td></tr>`}</tbody>
-      </table></div>
+      <div class="clist">${rows.length?rows.map(c=>{
+        const d=new Date(c.date+'T00:00:00'), tn=classTeachers(c).map(x=>x.name), cf=conflictIds.has(c.id);
+        return `<div class="crow ${c.date===t?'istoday':''} ${cf?'conflictrow':''}">
+          <div class="cdate"><b>${bn(d.getDate())}</b><span>${MONTHS[d.getMonth()]}</span><small>${['রবি','সোম','মঙ্গল','বুধ','বৃহঃ','শুক্র','শনি'][d.getDay()]}</small></div>
+          <div class="cbody"><div class="cmain">${esc(c.subject)}${cf?' ⚠️':''} <span class="lecchip">${esc(c.lecture)?'লেকচার '+esc(c.lecture):''}</span></div>
+            <div class="cmeta">${c.time?`<span>🕐 ${esc(c.time)}</span>`:''}${c.batch?`<span>👥 ${esc(c.batch)}</span>`:''}<span>📍 ${esc(c.branch)}</span>${tn.length?`<span>👨‍🏫 ${esc(tn.join(', '))}</span>`:''}</div></div>
+          ${canManage?`<div class="cact"><button class="rowbtn" title="তারিখ/সময় বদলান" onclick="openReschedule('${c.id}')">📅</button><button class="rowbtn" title="সম্পাদনা" onclick="openClassModal('${c.id}')">✎</button><button class="rowbtn" title="মুছুন" onclick="deleteClass('${c.id}')">🗑</button></div>`:''}
+        </div>`;}).join(''):`<div class="empty">কোনো ক্লাস পাওয়া যায়নি</div>`}</div>
     </div>`;
   document.getElementById('cf-q').oninput=e=>{classFilter.q=e.target.value;renderClasses();};
   document.getElementById('cf-subject').onchange=e=>{classFilter.subject=e.target.value;renderClasses();};
   document.getElementById('cf-branch').onchange=e=>{classFilter.branch=e.target.value;renderClasses();};
   document.getElementById('cf-month').onchange=e=>{classFilter.month=e.target.value;renderClasses();};
+}
+
+/* ---------- শিক্ষক বাছাই (একাধিক) ---------- */
+let pickSel=new Set();
+function openTeacherPicker(classId){
+  const c=data.classes.find(x=>x.id===classId); if(!c) return;
+  pickSel=new Set(classTeachers(c).map(t=>t.id));
+  const rec=data.teachers.filter(t=>t.subject===c.subject && tBranches(t).includes(c.branch));
+  const rest=data.teachers.filter(t=>!rec.includes(t));
+  const row=(t,star)=>`<label class="prow" data-s="${esc((t.name+' '+t.subject+' '+tBranches(t).join(' ')).toLowerCase())}">
+    <input type="checkbox" ${pickSel.has(t.id)?'checked':''} onchange="this.checked?pickSel.add('${t.id}'):pickSel.delete('${t.id}')">
+    <div class="avatar sm">${esc(t.name.slice(0,1))}</div>
+    <div class="tinfo"><b>${esc(t.name)}${star?' <em class="sug">প্রস্তাবিত</em>':''}</b><span>${esc(t.subject)} • ${esc(t.rangeLabel||'')} • ${esc(tBranches(t).join(' / '))}</span></div></label>`;
+  document.getElementById('modal').innerHTML=`
+    <h3>👥 শিক্ষক নির্বাচন</h3>
+    <p class="hint"><b>${esc(c.subject)}</b> — ${formatBn(c.date)} • ${esc(c.branch)}। একই ক্লাসে একাধিক শিক্ষক বাছা যায়; একই শিক্ষক অনলাইন/অফলাইন বা আলাদা শাখাতেও থাকতে পারেন।</p>
+    <input class="grow" style="width:100%;margin-bottom:10px" placeholder="শিক্ষক খুঁজুন..." oninput="pickFilter(this.value)">
+    <div class="plist">${rec.map(t=>row(t,true)).join('')}${rest.map(t=>row(t,false)).join('')||''}${data.teachers.length?'':'<div class="empty">আগে শিক্ষক ট্যাবে শিক্ষক যোগ করুন</div>'}</div>
+    <div class="modalactions"><button class="btn soft" onclick="resetPick('${c.id}')">স্বয়ংক্রিয় পরামর্শ</button><button class="btn primary" onclick="savePick('${c.id}')">✅ সংরক্ষণ</button></div>`;
+  document.getElementById('modalback').classList.add('open');
+}
+function pickFilter(q){ q=q.trim().toLowerCase(); document.querySelectorAll('.prow').forEach(r=>{r.style.display=(!q||r.dataset.s.includes(q))?'':'none';}); }
+function savePick(id){ const c=data.classes.find(x=>x.id===id); if(!c) return; c.teacherIds=[...pickSel]; persist('classes','set',c); saveLocalOnly(); closeModal(); renderAll(); toast('শিক্ষক নির্বাচন সংরক্ষিত'); }
+function resetPick(id){ const c=data.classes.find(x=>x.id===id); if(!c) return; delete c.teacherIds; persist('classes','set',c); saveLocalOnly(); closeModal(); renderAll(); }
+
+/* ---------- একটি ক্লাসের তারিখ/সময় বদল + শিক্ষককে জানানো ---------- */
+function rsShift(n){ const el=document.getElementById('rs-date'); const d=new Date(el.value+'T00:00:00'); d.setDate(d.getDate()+n); el.value=isoOf(d); }
+function openReschedule(id){
+  if(!hasPerm('classes')){toast('ক্লাস পরিচালনার অনুমতি নেই');return;}
+  const c=data.classes.find(x=>x.id===id); if(!c) return;
+  document.getElementById('modal').innerHTML=`
+    <h3>📅 তারিখ / সময় বদলান</h3>
+    <p class="hint"><b>${esc(c.subject)}</b> — লেকচার ${esc(c.lecture)}<br>এখন: ${formatBn(c.date)}${c.time?' • '+esc(c.time):''}</p>
+    <div class="field"><label>নতুন তারিখ</label><input type="date" id="rs-date" value="${c.date}">
+      <div class="qchips"><button onclick="rsShift(-7)">−৭ দিন</button><button onclick="rsShift(-1)">−১ দিন</button><button onclick="rsShift(1)">+১ দিন</button><button onclick="rsShift(7)">+৭ দিন</button></div></div>
+    <div class="field"><label>সময় (ঐচ্ছিক)</label><input id="rs-time" value="${esc(c.time)}" placeholder="যেমনঃ সন্ধ্যা ৭:১৫"></div>
+    <div class="modalactions"><button class="btn soft" onclick="closeModal()">বাতিল</button><button class="btn primary" onclick="saveReschedule('${id}')">✅ সংরক্ষণ</button></div>`;
+  document.getElementById('modalback').classList.add('open');
+}
+function saveReschedule(id){
+  const c=data.classes.find(x=>x.id===id); if(!c) return;
+  const date=document.getElementById('rs-date').value, time=document.getElementById('rs-time').value.trim();
+  if(!date){toast('তারিখ দিন');return;}
+  if(date===c.date && time===(c.time||'')){toast('কিছু বদলায়নি');return;}
+  lastChange={id,text:formatBn(c.date)+(c.time?' • '+c.time:'')};
+  c.date=date; c.time=time; persist('classes','set',c); saveLocalOnly();
+  logAudit('class_reschedule',`${c.subject} — ${lastChange.text} → ${formatBn(date)}${time?' • '+time:''}`);
+  renderAll();
+  const tl=classTeachers(c);
+  document.getElementById('modal').innerHTML=`
+    <h3>✅ সংরক্ষিত হয়েছে</h3>
+    <p class="hint">নতুন সময়সূচিঃ <b>${formatBn(date)}${time?' • '+esc(time):''}</b></p>
+    ${tl.length?`<p class="hint" style="margin-bottom:6px">শিক্ষককে পরিবর্তনের বার্তা পাঠান:</p><div class="tlist" style="border:0;padding:0">${tl.map(t=>teacherSendRow(id,'change',t)).join('')}</div>`:''}
+    <div class="modalactions"><button class="btn primary" onclick="closeModal()">শেষ</button></div>`;
+}
+
+/* ---------- তারিখ সরান (অনেক ক্লাস/পরীক্ষা একসাথে) ---------- */
+function shiftDate(iso,n){ const d=new Date(iso+'T00:00:00'); d.setDate(d.getDate()+n); return isoOf(d); }
+function openShiftModal(){
+  const myB=allowedBranches();
+  document.getElementById('modal').innerHTML=`
+    <h3>📅 তারিখ সরান</h3>
+    <p class="hint">নির্বাচিত তারিখ ও তার পরের সব ক্লাস/পরীক্ষা একসাথে আগে বা পরে সরে যাবে। ছুটি বা বন্ধের পর রুটিন গোছাতে কাজে লাগে।</p>
+    <div class="field"><label>কোন তারিখ থেকে</label><input type="date" id="sh-from" value="${todayISO()}" oninput="shiftPreview()"></div>
+    <div class="field"><label>কত দিন (+ = পিছিয়ে, − = এগিয়ে)</label>
+      <div class="stepper"><button onclick="shStep(-1)">−</button><input type="number" id="sh-days" value="1" oninput="shiftPreview()"><button onclick="shStep(1)">+</button></div></div>
+    <div class="field"><label>শাখা</label><select id="sh-branch" onchange="shiftPreview()"><option value="">সব শাখা</option>${branchOptionsHtml('',myB)}</select></div>
+    <div class="chkrow"><label class="chk"><input type="checkbox" id="sh-c" checked onchange="shiftPreview()"><span>ক্লাস</span></label><label class="chk"><input type="checkbox" id="sh-e" checked onchange="shiftPreview()"><span>পরীক্ষা</span></label></div>
+    <div id="sh-prev" style="margin-top:12px"></div>
+    <div class="modalactions"><button class="btn soft" onclick="closeModal()">বাতিল</button><button class="btn primary" onclick="applyShift()">✅ সরান</button></div>`;
+  document.getElementById('modalback').classList.add('open');
+  shiftPreview();
+}
+function shStep(d){ const el=document.getElementById('sh-days'); el.value=(parseInt(el.value,10)||0)+d; shiftPreview(); }
+function shiftItems(){
+  const from=document.getElementById('sh-from').value, n=parseInt(document.getElementById('sh-days').value,10)||0, br=document.getElementById('sh-branch').value;
+  const ok=x=>x.date>=from && (!br||x.branch===br) && allowedBranches().includes(x.branch);
+  const cl=(document.getElementById('sh-c').checked&&hasPerm('classes'))?data.classes.filter(ok):[];
+  const ex=(document.getElementById('sh-e').checked&&hasPerm('exams'))?data.exams.filter(ok):[];
+  return {from,n,cl,ex};
+}
+function shiftPreview(){
+  const {from,n,cl,ex}=shiftItems(), el=document.getElementById('sh-prev'), all=[...cl,...ex].sort((a,b)=>a.date.localeCompare(b.date));
+  if(!from||!n){el.innerHTML='<p class="hint">কত দিন সরবে তা দিন (০ নয়)।</p>';return;}
+  if(!all.length){el.innerHTML='<p class="hint">এই তারিখের পর কোনো ক্লাস/পরীক্ষা নেই।</p>';return;}
+  el.innerHTML=`<p class="hint"><b>${bn(cl.length)}টি ক্লাস</b> ও <b>${bn(ex.length)}টি পরীক্ষা</b> সরবে। যেমনঃ</p>
+    <div class="shprev">${all.slice(0,5).map(x=>`<div>${formatBn(x.date)} <b>→ ${formatBn(shiftDate(x.date,n))}</b> <span>${esc(x.subject)}</span></div>`).join('')}${all.length>5?`<div class="hint">...আরও ${bn(all.length-5)}টি</div>`:''}</div>`;
+}
+function applyShift(){
+  const {n,cl,ex}=shiftItems();
+  if(!n||(!cl.length&&!ex.length)){toast('সরানোর মতো কিছু নেই');return;}
+  if(!confirm(`${bn(cl.length)}টি ক্লাস ও ${bn(ex.length)}টি পরীক্ষা ${bn(Math.abs(n))} দিন ${n>0?'পিছিয়ে':'এগিয়ে'} যাবে। নিশ্চিত?`)) return;
+  cl.forEach(x=>{x.date=shiftDate(x.date,n);persist('classes','set',x);});
+  ex.forEach(x=>{x.date=shiftDate(x.date,n);persist('exams','set',x);});
+  saveLocalOnly(); logAudit('bulk_shift',`${cl.length} ক্লাস, ${ex.length} পরীক্ষা — ${n} দিন`);
+  closeModal(); renderAll(); toast(`${bn(cl.length+ex.length)}টি সরানো হয়েছে`);
+}
+
+/* ---------- সাপ্তাহিক রুটিন ছবি (শেয়ার করার জন্য) ---------- */
+const RT_DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const RT_MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+let rtState={ws:'',branch:''}, rtSaveTimer=null, rtLogoImg=null;
+function rtWeekStart(iso){ const d=new Date(iso+'T00:00:00'); d.setDate(d.getDate()-((d.getDay()+1)%7)); return isoOf(d); } // সপ্তাহ শুরু শনিবার
+function rtDefaultWeek(){ const dow=new Date().getDay(); return rtWeekStart((dow===4||dow===5)?shiftDate(todayISO(),7):todayISO()); } // বৃহঃ/শুক্র হলে পরের সপ্তাহ
+function rtLec(l){ const t=bnToEn(l||'').trim(); return /^\d+$/.test(t)?'Lecture - '+Number(t):t; }
+function rtSyl(t){ const m=String(t||'').match(/lecture\s*[:\-]?\s*(\d+)/i); return m?'Lecture - '+pad2(m[1]):String(t||''); }
+function rtSplitExam(name){ const m=String(name||'').match(/^(.*?)\s*\((.*)\)\s*$/); return m?{name:m[1].trim(),syl:m[2].trim()}:{name:String(name||'').trim(),syl:''}; }
+function rtRows(ws,branch){
+  const rows=[];
+  for(let i=0;i<7;i++){
+    const iso=shiftDate(ws,i), d=new Date(iso+'T00:00:00');
+    const cls=data.classes.filter(c=>c.date===iso&&c.branch===branch), exs=data.exams.filter(e=>e.date===iso&&e.branch===branch);
+    const base={date:pad2(d.getDate())+'-'+RT_MON[d.getMonth()],day:RT_DAYS[d.getDay()]};
+    [...new Set([...cls.map(c=>c.subject),...exs.map(e=>e.subject)])].forEach(sub=>{
+      const c=cls.find(x=>x.subject===sub), e=exs.find(x=>x.subject===sub), ex=e?rtSplitExam(e.examName):null;
+      if(!c && ex && sub===ALLSUB){
+        const sy=ex.syl?rtSyl(ex.syl):'';
+        rows.push({...base,special:true,title:ex.name,syl:/^lecture/i.test(sy)?'All Subject '+sy:sy});
+      }else{
+        const num=c&&/^\d+$/.test(bnToEn(c.lecture||'').trim());
+        rows.push({...base,subject:sub,lecture:c?rtLec(c.lecture):'—',exam:ex?ex.name:'—',
+          syl:ex?(ex.syl?rtSyl(ex.syl):(c?(num?'Lecture - '+pad2(bnToEn(c.lecture).trim()):rtLec(c.lecture)):'—')):'—'});
+      }
+    });
+  }
+  return rows;
+}
+function rtFit(x,t,maxW,px,w){ let s=px; do{ x.font=`${w} ${s}px "Hind Siliguri","Manrope",sans-serif`; s-=1; }while(x.measureText(t).width>maxW && s>14); }
+function rtRound(x,X,Y,W,H,r){ x.beginPath(); x.moveTo(X+r,Y); x.arcTo(X+W,Y,X+W,Y+H,r); x.arcTo(X+W,Y+H,X,Y+H,r); x.arcTo(X,Y+H,X,Y,r); x.arcTo(X,Y,X+W,Y,r); x.closePath(); }
+async function rtDraw(canvas,rows,o){
+  try{ await Promise.all([document.fonts.load('600 28px "Hind Siliguri"'),document.fonts.load('700 28px "Hind Siliguri"'),document.fonts.load('800 28px "Manrope"')]); }catch(e){}
+  if(!rtLogoImg){ try{ const im=new Image(); await new Promise((res,rej)=>{im.onload=res;im.onerror=rej;im.src=LOGO_SRC;}); rtLogoImg=im; }catch(e){} }
+  const W=1280, RH=56, top=250, n=Math.max(rows.length,1), H=top+58+n*RH+250;
+  canvas.width=W; canvas.height=H; const x=canvas.getContext('2d');
+  x.fillStyle='#fff'; x.fillRect(0,0,W,H);
+  const dots=(ox,oy,sx,sy,col,size)=>{ for(let gx=0;gx<size;gx+=15) for(let gy=0;gy<size;gy+=15){ const r=Math.max(0,5.2-Math.hypot(gx,gy)/(size/5.2)); if(r>0.6){ x.fillStyle=col; x.beginPath(); x.arc(ox+sx*gx,oy+sy*gy,r,0,7); x.fill(); } } };
+  dots(8,8,1,1,'#7fdccf',230); dots(W-8,H-8,-1,-1,'#7fdccf',250); dots(8,H-8,1,-1,'#9be8dc',190);
+  x.textBaseline='middle'; x.textAlign='center';
+  x.fillStyle='#ff4a00'; rtFit(x,'ক্লাস রুটিন',700,88,700); x.fillText('ক্লাস রুটিন',W/2,88);
+  x.fillStyle='#111'; rtFit(x,o.branch,700,44,700); x.fillText(o.branch,W/2,160);
+  x.font='700 34px "Hind Siliguri","Manrope",sans-serif';
+  if(o.examTime){ x.textAlign='left'; x.fillText('Exam Time: '+o.examTime,40,206); }
+  if(o.classTime){ x.textAlign='right'; x.fillText('Class Time: '+o.classTime,W-40,206); }
+  const cols=[180,200,216,224,186,204], xs=[35]; cols.forEach(w=>xs.push(xs[xs.length-1]+w));
+  x.fillStyle='#ff4a00'; x.fillRect(xs[0],top,xs[6]-xs[0],58);
+  x.fillStyle='#fff'; x.textAlign='center';
+  ['Date','Day','Subject','Lecture','Exam','Exam Syllabus'].forEach((h,i)=>{ rtFit(x,h,cols[i]-14,28,700); x.fillText(h,(xs[i]+xs[i+1])/2,top+30); });
+  rows.forEach((r,ri)=>{
+    const y=top+58+ri*RH;
+    x.fillStyle=r.special?'#ffe9e6':'#fff'; x.fillRect(xs[0],y,xs[6]-xs[0],RH);
+    x.strokeStyle='#9a9a9a'; x.lineWidth=1; x.setLineDash([2,3]);
+    const cells=r.special?[[0,1,r.date],[1,2,r.day],[2,4,r.title],[4,6,r.syl]]:[[0,1,r.date],[1,2,r.day],[2,3,r.subject],[3,4,r.lecture],[4,5,r.exam],[5,6,r.syl]];
+    cells.forEach(([a,b,t])=>{ x.strokeRect(xs[a]+.5,y+.5,xs[b]-xs[a],RH); x.fillStyle='#111'; rtFit(x,t||'',xs[b]-xs[a]-18,28,700); x.fillText(t||'',(xs[a]+xs[b])/2,y+RH/2+1); });
+  });
+  x.setLineDash([]);
+  if(!rows.length){ x.fillStyle='#777'; x.font='600 26px "Hind Siliguri",sans-serif'; x.fillText('এই সপ্তাহে কোনো ক্লাস বা পরীক্ষা নেই',W/2,top+58+RH/2); }
+  const yb=top+58+n*RH+40;
+  if(o.note){
+    const segs=o.note.split('*'); x.font='700 28px "Hind Siliguri","Manrope",sans-serif';
+    const tw=segs.reduce((a,t)=>a+x.measureText(t).width,0), pw=Math.max(420,tw+128), px=(W-pw)/2;
+    x.fillStyle='#fff'; rtRound(x,px,yb,pw,62,31); x.fill(); x.strokeStyle='#ff4a00'; x.lineWidth=4; rtRound(x,px,yb,pw,62,31); x.stroke();
+    x.fillStyle='#2d8cff'; x.beginPath(); x.arc(px+44,yb+31,24,0,7); x.fill();
+    x.fillStyle='#fff'; x.fillRect(px+32,yb+23,17,16); x.beginPath(); x.moveTo(px+52,yb+31); x.lineTo(px+60,yb+24); x.lineTo(px+60,yb+38); x.fill();
+    x.textAlign='left'; let cx=px+84; segs.forEach((t,i)=>{ x.fillStyle=(i%2)?'#1a73e8':'#111'; x.fillText(t,cx,yb+32); cx+=x.measureText(t).width; });
+  }
+  const yl=yb+(o.note?62:0)+44, parts=(o.org||'Business Titan').toUpperCase().split(' '), l1=parts[0], l2=parts.slice(1).join(' ');
+  x.textAlign='left'; x.font='800 26px "Manrope","Hind Siliguri",sans-serif'; const w1=x.measureText(l1).width;
+  x.font='800 38px "Manrope","Hind Siliguri",sans-serif'; const w2=x.measureText(l2).width, bw=Math.max(w1,w2), lw=rtLogoImg?42:0, sx=(W-(lw+14+bw))/2;
+  if(rtLogoImg) x.drawImage(rtLogoImg,sx,yl,lw,Math.round(lw*rtLogoImg.height/rtLogoImg.width));
+  x.fillStyle='#111'; x.font='800 26px "Manrope","Hind Siliguri",sans-serif'; x.fillText(l1,sx+lw+14,yl+14);
+  x.font='800 38px "Manrope","Hind Siliguri",sans-serif'; x.fillText(l2,sx+lw+14,yl+44);
+  if(o.tagline){ x.fillStyle='#444'; x.font='600 12px "Manrope",sans-serif'; if('letterSpacing' in x) x.letterSpacing='1px'; x.fillText(o.tagline,sx+lw+14,yl+76); if('letterSpacing' in x) x.letterSpacing='0px'; }
+}
+function rtOpts(){
+  const g=id=>{const e=document.getElementById(id);return e?e.value.trim():'';};
+  return {branch:rtState.branch,org:data.settings.orgName,examTime:g('rt-exam'),classTime:g('rt-class'),note:g('rt-note'),tagline:g('rt-tag')};
+}
+function rtRender(){
+  const rows=rtRows(rtState.ws,rtState.branch);
+  document.getElementById('rt-range').textContent=formatBn(rtState.ws)+' — '+formatBn(shiftDate(rtState.ws,6));
+  document.getElementById('rt-count').textContent=rows.length?bn(rows.length)+'টি সারি':'এই সপ্তাহে এই শাখায় কিছু নেই';
+  rtDraw(document.getElementById('rt-canvas'),rows,rtOpts());
+}
+function rtNav(n){ rtState.ws=shiftDate(rtState.ws,7*n); rtAutoTimes(); rtRender(); }
+function rtAutoTimes(){ // ক্লাসের সময় ফাঁকা থাকলে ওই সপ্তাহের সবচেয়ে বেশি ব্যবহৃত সময় বসাও
+  const el=document.getElementById('rt-class'); if(!el||(data.settings.routine||{}).classTime) return;
+  const cnt={}; data.classes.forEach(c=>{ if(c.branch===rtState.branch&&c.time&&c.date>=rtState.ws&&c.date<=shiftDate(rtState.ws,6)) cnt[c.time]=(cnt[c.time]||0)+1; });
+  const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0]; el.value=top?top[0]:'';
+}
+function rtChanged(){
+  clearTimeout(rtSaveTimer);
+  rtSaveTimer=setTimeout(()=>{ const o=rtOpts(); data.settings.routine={examTime:o.examTime,classTime:o.classTime,note:o.note,tagline:o.tagline}; persist('settings','replace',data.settings); },900);
+  rtRender();
+}
+function openRoutineImage(){
+  const myB=allowedBranches(), r=data.settings.routine||{};
+  rtState.ws=rtDefaultWeek();
+  rtState.branch=myB.find(b=>rtRows(rtState.ws,b).length)||myB[0];
+  document.getElementById('modal').innerHTML=`
+    <h3>🖼️ সাপ্তাহিক রুটিন ছবি</h3>
+    <div class="rtnav"><button class="ibtn" onclick="rtNav(-1)">◀</button><div><b id="rt-range"></b><div class="hint" id="rt-count" style="margin:0"></div></div><button class="ibtn" onclick="rtNav(1)">▶</button></div>
+    <div class="field"><label>শাখা</label><select id="rt-branch" onchange="rtState.branch=this.value;rtAutoTimes();rtRender()">${branchOptionsHtml(rtState.branch,myB)}</select></div>
+    <div class="rtprev"><canvas id="rt-canvas"></canvas></div>
+    <details class="rtdet"><summary>✏️ লেখা বদলান (পরীক্ষার সময়, ক্লাসের সময়, নোট)</summary>
+      <div class="grid g2"><div class="field"><label>Exam Time</label><input id="rt-exam" value="${esc(r.examTime||'')}" placeholder="06:00 PM" oninput="rtChanged()"></div>
+      <div class="field"><label>Class Time</label><input id="rt-class" value="${esc(r.classTime||'')}" placeholder="06:45 PM" oninput="rtChanged()"></div></div>
+      <div class="field"><label>নিচের নোট (* দিয়ে নীল করা যায়)</label><input id="rt-note" value="${esc(r.note!==undefined?r.note:'প্রতিটি ক্লাস হবে *Zoom Live*-এ।')}" oninput="rtChanged()"></div>
+      <div class="field"><label>লোগোর নিচের লেখা</label><input id="rt-tag" value="${esc(r.tagline!==undefined?r.tagline:'ACADEMIC | ADMISSION | IBA')}" oninput="rtChanged()"></div>
+    </details>
+    <div class="modalactions"><button class="btn soft" onclick="closeModal()">বন্ধ</button><button class="btn soft" onclick="rtDownload()">⬇️ PNG</button><button class="btn primary" onclick="rtShare()">📤 শেয়ার করুন</button></div>`;
+  document.getElementById('modalback').classList.add('open');
+  rtAutoTimes(); rtRender();
+}
+function rtBlob(){ return new Promise(r=>document.getElementById('rt-canvas').toBlob(r,'image/png')); }
+async function rtDownload(){ const b=await rtBlob(), a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='class-routine-'+rtState.ws+'.png'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); }
+async function rtShare(){
+  const b=await rtBlob(), f=new File([b],'class-routine-'+rtState.ws+'.png',{type:'image/png'});
+  if(navigator.canShare&&navigator.canShare({files:[f]})){ try{ await navigator.share({files:[f],title:'ক্লাস রুটিন'}); }catch(e){} }
+  else{ rtDownload(); toast('ছবি ডাউনলোড হয়েছে — এখন WhatsApp/Telegram-এ পাঠান'); }
+}
+function rtHomeCardHtml(){
+  if(!hasPerm('classes')&&!hasPerm('reminders')) return '';
+  const ws=rtDefaultWeek(), we=shiftDate(ws,6), ok=x=>x.date>=ws&&x.date<=we&&allowedBranches().includes(x.branch);
+  const n=data.classes.filter(ok).length+data.exams.filter(ok).length;
+  if(!n) return '';
+  return `<div class="card rtcard"><div class="rtic">🖼️</div><div class="rtt"><b>${ws===rtWeekStart(todayISO())?'এই সপ্তাহের':'আগামী সপ্তাহের'} রুটিন তৈরি হয়ে গেছে</b><span>${formatBn(ws)} — ${formatBn(we)} • ${bn(n)}টি এন্ট্রি</span></div><button class="btn primary" onclick="openRoutineImage()">ছবি দেখুন ও শেয়ার</button></div>`;
 }
 function monthLabel(m){const [y,mo]=m.split('-').map(Number);return `${MONTHS[mo-1]} ${bn(y)}`;}
 
@@ -1481,7 +1755,8 @@ function previewBulk(){
     }else if(importKind==='teacher'){
       const [name,subject,rangeLabel,rf,rt,phone,telegram,branch]=parts;
       if(!name||!subject){ok=false;reason='নাম/বিষয় ঠিক নেই';}
-      rec={name,subject,rangeLabel:rangeLabel||'',rangeFrom:Number(rf)||1,rangeTo:Number(rt)||99,phone:phone||'',telegram:telegram||'',branch:ensureBranchName(branch)};
+      const bl=(branch||'').split(/[\/|;]/).map(x=>x.trim()).filter(Boolean); if(!bl.length) bl.push(ensureBranchName(''));
+      rec={name,subject,rangeLabel:rangeLabel||'',rangeFrom:Number(rf)||1,rangeTo:Number(rt)||99,phone:phone||'',telegram:telegram||'',branch:bl[0],branches:bl};
     }else{
       const [date,subject,lecture,time,batch,branch]=parts;
       if(!date||!subject||!/^\d{4}-\d{2}-\d{2}$/.test(date)){ok=false;reason='তারিখ/বিষয় ঠিক নেই';}
@@ -1530,7 +1805,7 @@ function commitBulk(){
   if(!hasPerm(kindPermMap[importKind])){toast('এই ইম্পোর্টের অনুমতি নেই');return;}
   let added=0;
   importPreviewRows.filter(r=>r.ok).forEach(r=>{
-    if(!data.branches.includes(r.rec.branch)) data.branches.push(r.rec.branch);
+    (r.rec.branches||[r.rec.branch]).forEach(b=>{ if(!data.branches.includes(b)) data.branches.push(b); });
     let record;
     if(importKind==='exam'){ record={id:uid('e'),...r.rec}; data.exams.push(record); persist('exams','set',record); }
     else if(importKind==='teacher'){ record={id:uid('t'),...r.rec}; data.teachers.push(record); persist('teachers','set',record); }
@@ -1549,8 +1824,8 @@ let teacherFilter={branch:''};
 function renderTeachers(){
   if(!hasPerm('teachers')){document.getElementById('view-teachers').innerHTML='<div class="empty">শিক্ষক তালিকা দেখার অনুমতি নেই।</div>';return;}
   const myBranches=allowedBranches();
-  let rows=data.teachers.filter(t=>myBranches.includes(t.branch));
-  if(teacherFilter.branch) rows=rows.filter(t=>t.branch===teacherFilter.branch);
+  let rows=data.teachers.filter(t=>tBranches(t).some(b=>myBranches.includes(b)));
+  if(teacherFilter.branch) rows=rows.filter(t=>tBranches(t).includes(teacherFilter.branch));
   document.getElementById('view-teachers').innerHTML=`
     <div class="toolbar">
       <select id="tf-branch" class="grow"><option value="">সব শাখা</option>${branchOptionsHtml(teacherFilter.branch,myBranches)}</select>
@@ -1562,7 +1837,7 @@ function renderTeachers(){
       <div class="card teachercard">
         <div style="display:flex;gap:12px;align-items:center">
           <div class="avatar">${esc(t.name.slice(0,1))}</div>
-          <div><b>${esc(t.name)}</b><div class="sub">${esc(t.subject)} • ${esc(t.rangeLabel)} • ${esc(t.branch)}</div>
+          <div><b>${esc(t.name)}</b><div class="sub">${esc(t.subject)} • ${esc(t.rangeLabel)} • ${esc(tBranches(t).join(' / '))}</div>
           <div class="sub">📞 ${esc(t.phone||'—')} ${t.telegram?`• Telegram: @${esc(t.telegram)}`:''}</div></div>
         </div>
         <div style="display:flex;gap:6px">
@@ -1592,7 +1867,7 @@ function openTeacherModal(id){
     </div>
     <div class="field"><label>মোবাইল নম্বর (WhatsApp)</label><input id="m-phone" value="${t?esc(t.phone):''}" placeholder="01XXXXXXXXX"></div>
     <div class="field"><label>Telegram ইউজারনেম (ঐচ্ছিক)</label><input id="m-tg" value="${t?esc(t.telegram):''}" placeholder="@ ছাড়া লিখুন"></div>
-    <div class="field"><label>শাখা</label><select id="m-tbranch">${branchOptionsHtml(t?t.branch:myBranches[0],myBranches)}</select></div>
+    <div class="field"><label>শাখা (একাধিক বাছা যায় — অনলাইন, অফলাইন বা আলাদা শাখা)</label><div class="chkrow" id="m-tbranches">${myBranches.map(b=>`<label class="chk"><input type="checkbox" value="${esc(b)}" ${(t?tBranches(t):[myBranches[0]]).includes(b)?'checked':''}><span>${esc(b)}</span></label>`).join('')}</div></div>
     <div class="modalactions"><button class="btn soft" onclick="closeModal()">বাতিল</button><button class="btn primary" onclick="saveTeacher(${t?`'${t.id}'`:'null'})">সংরক্ষণ করুন</button></div>`;
   document.getElementById('modalback').classList.add('open');
 }
@@ -1604,11 +1879,12 @@ function saveTeacher(id){
   const rangeTo=Number(document.getElementById('m-rt').value)||99;
   const phone=document.getElementById('m-phone').value.trim();
   const telegram=document.getElementById('m-tg').value.trim().replace('@','');
-  const branch=document.getElementById('m-tbranch').value;
+  const branches=[...document.querySelectorAll('#m-tbranches input:checked')].map(i=>i.value), branch=branches[0];
   if(!name||!subject){toast('নাম ও বিষয় আবশ্যক');return;}
+  if(!branches.length){toast('অন্তত একটি শাখা বাছুন');return;}
   let record;
-  if(id){record=data.teachers.find(t=>t.id===id);Object.assign(record,{name,subject,rangeLabel,rangeFrom,rangeTo,phone,telegram,branch});logAudit('teacher_edit',name);}
-  else{record={id:uid('t'),name,subject,rangeLabel,rangeFrom,rangeTo,phone,telegram,branch};data.teachers.push(record);logAudit('teacher_add',name);}
+  if(id){record=data.teachers.find(t=>t.id===id);Object.assign(record,{name,subject,rangeLabel,rangeFrom,rangeTo,phone,telegram,branch,branches});logAudit('teacher_edit',name);}
+  else{record={id:uid('t'),name,subject,rangeLabel,rangeFrom,rangeTo,phone,telegram,branch,branches};data.teachers.push(record);logAudit('teacher_add',name);}
   persist('teachers','set',record);
   closeModal();renderTeachers();toast('সংরক্ষিত হয়েছে');
 }
@@ -1734,7 +2010,7 @@ function removeBranch(name){
   if(!confirm(`"${name}" শাখাটি মুছে ফেলবেন? এই শাখার ক্লাস/পরীক্ষা/শিক্ষক অন্য শাখায় স্থানান্তরিত হবে।`))return;
   data.branches=data.branches.filter(b=>b!==name);
   const fallback=data.branches[0];
-  data.teachers.forEach(t=>{if(t.branch===name){t.branch=fallback;persist('teachers','set',t);}});
+  data.teachers.forEach(t=>{ if(tBranches(t).includes(name)){ t.branches=[...new Set(tBranches(t).map(b=>b===name?fallback:b))]; t.branch=t.branches[0]; persist('teachers','set',t);} });
   data.classes.forEach(c=>{if(c.branch===name){c.branch=fallback;persist('classes','set',c);}});
   data.exams.forEach(e=>{if(e.branch===name){e.branch=fallback;persist('exams','set',e);}});
   data.admins.forEach(a=>{const before=(a.branches||[]).join();a.branches=(a.branches||[]).map(b=>b===name?fallback:b);if(a.branches.join()!==before)persist('admins','set',a);});
