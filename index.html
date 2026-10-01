@@ -906,7 +906,7 @@ function homeHeroHtml(c,e){
   const empty=(data.teachers.length===0&&data.classes.length===0);
   return `<div class="hero"><div class="hero-g">${g}${nm?', '+esc(nm):''}</div><div class="hero-s">${sum}</div></div>
   ${empty?`<div class="card onboard"><h3>শুরু করুন</h3><p class="hint">এখনো কোনো শিক্ষক বা ক্লাস যোগ করা হয়নি। আগে শিক্ষক, তারপর ক্লাস যোগ করলে রিমাইন্ডার পাঠানো যাবে।</p>
-    <div class="actions" style="padding-left:0"><button class="btn primary" onclick="gotoTab('teachers')">👨‍🏫 শিক্ষক যোগ করুন</button><button class="btn soft" onclick="gotoTab('classes')">📖 ক্লাস যোগ করুন</button><button class="btn soft" onclick="gotoTab('settings')">⇧ ব্যাকআপ পুনরুদ্ধার</button></div></div>`:''}`;
+    <div class="actions" style="padding-left:0"><button class="btn primary" onclick="gotoTab('teachers')">👨‍🏫 শিক্ষক যোগ করুন</button><button class="btn soft" onclick="gotoTab('classes')">📖 ক্লাস যোগ করুন</button><button class="btn soft" onclick="openImportModal('both')">⇩ ক্লাস + পরীক্ষা ইম্পোর্ট</button><button class="btn soft" onclick="gotoTab('settings')">⇧ ব্যাকআপ পুনরুদ্ধার</button></div></div>`:''}`;
 }
 function gotoTab(t){ const b=document.querySelector('#tabsbar button[data-tab="'+t+'"]'); if(b) b.click(); }
 function renderHome(){
@@ -983,6 +983,7 @@ function renderClasses(){
       ${canManage?`<div class="toolbar">
         <button class="btn primary" onclick="openClassModal()">＋ ক্লাস যোগ</button>
         <button class="btn soft" onclick="openImportModal('class')">⇩ বাল্ক ইম্পোর্ট</button>
+        <button class="btn primary" onclick="openImportModal('both')">⇩ ক্লাস + পরীক্ষা একসাথে</button>
         <button class="btn soft" onclick="openBatchTimeModal()">🕐 ব্যাচের সব ক্লাসে একই সময় বসান</button>
         <button class="btn soft" onclick="printRoutine()">🖨️ প্রিন্ট / PDF</button>
       </div>`:`<div class="toolbar"><button class="btn soft" onclick="printRoutine()">🖨️ প্রিন্ট / PDF</button></div>`}
@@ -1145,6 +1146,7 @@ function renderExams(){
       ${canManage?`<div class="toolbar">
         <button class="btn primary" onclick="openExamModal()">＋ পরীক্ষা যোগ</button>
         <button class="btn soft" onclick="openImportModal('exam')">⇩ বাল্ক ইম্পোর্ট</button>
+        <button class="btn primary" onclick="openImportModal('both')">⇩ ক্লাস + পরীক্ষা একসাথে</button>
       </div>`:''}
       <p class="hint">পরীক্ষার জন্য শিক্ষকদের রিমাইন্ডার পাঠানো হয় না — এটা শুধু তথ্যের জন্য তালিকাভুক্ত থাকে।</p>
       <div class="table-wrap"><table>
@@ -1208,15 +1210,17 @@ let importKind='class';
 let importPreviewRows=null;
 function openImportModal(kind){
   importKind=kind;importPreviewRows=null;
-  const labels={class:'ক্লাস',exam:'পরীক্ষা',teacher:'শিক্ষক'};
+  const labels={class:'ক্লাস',exam:'পরীক্ষা',both:'ক্লাস + পরীক্ষা (একসাথে)',teacher:'শিক্ষক'};
   const formats={
     class:'তারিখ(YYYY-MM-DD), বিষয়, লেকচার, সময়(ঐচ্ছিক), ব্যাচ(ঐচ্ছিক), শাখা(ঐচ্ছিক)',
     exam:'তারিখ(YYYY-MM-DD), বিষয়, পরীক্ষার নাম, শাখা(ঐচ্ছিক)',
+    both:'তারিখ(YYYY-MM-DD), বিষয়, লেকচার, পরীক্ষার নাম, সময়(ঐচ্ছিক), ব্যাচ(ঐচ্ছিক), শাখা(ঐচ্ছিক)<br>লেকচার থাকলে ক্লাস, পরীক্ষার নাম থাকলে পরীক্ষা তৈরি হবে (দুটোই থাকলে দুটোই)। যেটা নেই সেই ঘর ফাঁকা রাখুন।',
     teacher:'নাম, বিষয়, লেকচার রেঞ্জ লেবেল, রেঞ্জ শুরু, রেঞ্জ শেষ, মোবাইল, Telegram(ঐচ্ছিক), শাখা(ঐচ্ছিক)'
   };
   const examples={
     class:'2026-08-22, ইংরেজি, ১, সন্ধ্যা ৭:১৫, সন্ধ্যা ব্যাচ, অনলাইন শাখা',
     exam:'2026-08-29, ইংরেজি, CT-01, অনলাইন শাখা',
+    both:'2026-08-22, ইংরেজি, ১, Memory Test, সন্ধ্যা ৭:১৫, সন্ধ্যা ব্যাচ, অনলাইন শাখা',
     teacher:'মোমিনুল ইসলাম, ইংরেজি, লেকচার ১-১২, 1, 12, 01700000001, , অনলাইন শাখা'
   };
   document.getElementById('modal').innerHTML=`
@@ -1234,7 +1238,11 @@ function openImportModal(kind){
   document.getElementById('modalback').classList.add('open');
 }
 function downloadImportDemo(kind){
-  const demo = kind==='exam' ? [
+  const demo = kind==='both' ? [
+    '2026-08-22, ইংরেজি, ১, Memory Test, সন্ধ্যা ৭:১৫, সন্ধ্যা ব্যাচ, অনলাইন শাখা',
+    '2026-08-23, বাংলা, ২, , সন্ধ্যা ৭:১৫, সন্ধ্যা ব্যাচ, অনলাইন শাখা',
+    '2026-08-29, ইংরেজি, , CT-01, , , অনলাইন শাখা'
+  ] : kind==='exam' ? [
     '2026-08-22, ইংরেজি, Memory Test, অনলাইন শাখা',
     '2026-08-29, বাংলা, CT-01, অনলাইন শাখা',
     '2026-09-19, হিসাববিজ্ঞান, CT-04, অনলাইন শাখা'
@@ -1276,11 +1284,13 @@ async function getPdfJs(){
 const IMPORT_COLS={
   class:['date','subject','lecture','time','batch','branch'],
   exam:['date','subject','examName','branch'],
+  both:['date','subject','lecture','examName','time','batch','branch'],
   teacher:['name','subject','rangeLabel','rangeFrom','rangeTo','phone','telegram','branch']
 };
 const IMPORT_HEADS={
   class:['তারিখ','বিষয়','লেকচার','সময়','ব্যাচ','শাখা'],
   exam:['তারিখ','বিষয়','পরীক্ষার নাম','শাখা'],
+  both:['তারিখ','বিষয়','লেকচার','পরীক্ষার নাম','সময়','ব্যাচ','শাখা'],
   teacher:['নাম','বিষয়','লেকচার রেঞ্জ লেবেল','রেঞ্জ শুরু','রেঞ্জ শেষ','মোবাইল','Telegram','শাখা']
 };
 const IMPORT_SYN={
@@ -1401,6 +1411,7 @@ async function downloadImportXlsx(kind){
     const sample={
       class:[['2026-08-22','ইংরেজি','১','সন্ধ্যা ৭:১৫','সন্ধ্যা ব্যাচ','অনলাইন শাখা'],['2026-08-23','বাংলা','২','সন্ধ্যা ৭:১৫','সন্ধ্যা ব্যাচ','অনলাইন শাখা']],
       exam:[['2026-08-29','ইংরেজি','CT-01','অনলাইন শাখা'],['2026-09-05','বাংলা','CT-02','অনলাইন শাখা']],
+      both:[['2026-08-22','ইংরেজি','১','Memory Test','সন্ধ্যা ৭:১৫','সন্ধ্যা ব্যাচ','অনলাইন শাখা'],['2026-08-23','বাংলা','২','','সন্ধ্যা ৭:১৫','সন্ধ্যা ব্যাচ','অনলাইন শাখা'],['2026-08-29','ইংরেজি','','CT-01','','','অনলাইন শাখা']],
       teacher:[['শিক্ষকের নাম','ইংরেজি','লেকচার ১-১২',1,12,'01700000001','','অনলাইন শাখা']]
     }[kind];
     const ws=X.utils.aoa_to_sheet([IMPORT_HEADS[kind],...sample]);
@@ -1419,8 +1430,16 @@ function previewBulk(){
   const rows=[];
   lines.forEach(line=>{
     const parts=(line.includes('\t')?line.split('\t'):line.split(',')).map(p=>p.trim());
+    if(importKind!=='teacher' && parts[0]) parts[0]=normDate(parts[0]);
     let ok=true,reason='',rec={};
-    if(importKind==='exam'){
+    if(importKind==='both'){
+      const [date,subject,lecture,examName,time,batch,branch]=parts;
+      if(!date||!subject||!/^\d{4}-\d{2}-\d{2}$/.test(date)){ok=false;reason='তারিখ/বিষয় ঠিক নেই';}
+      else if(!lecture&&!examName){ok=false;reason='লেকচার বা পরীক্ষার নাম অন্তত একটি দিন';}
+      else if(lecture&&!hasPerm('classes')){ok=false;reason='ক্লাস যোগের অনুমতি নেই';}
+      else if(examName&&!hasPerm('exams')){ok=false;reason='পরীক্ষা যোগের অনুমতি নেই';}
+      rec={date,subject,lecture:lecture||'',examName:examName||'',time:time||'',batch:batch||'',branch:ensureBranchName(branch),creates:(lecture&&examName)?'ক্লাস + পরীক্ষা':(lecture?'ক্লাস':'পরীক্ষা')};
+    }else if(importKind==='exam'){
       const [date,subject,examName,branch]=parts;
       if(!date||!subject||!examName||!/^\d{4}-\d{2}-\d{2}$/.test(date)){ok=false;reason='তারিখ/বিষয়/পরীক্ষার নাম ঠিক নেই';}
       rec={date,subject,examName,branch:ensureBranchName(branch)};
@@ -1437,7 +1456,7 @@ function previewBulk(){
   });
   importPreviewRows=rows;
   const validCount=rows.filter(r=>r.ok).length;
-  const cols = importKind==='exam' ? ['date','subject','examName','branch'] : importKind==='teacher' ? ['name','subject','rangeLabel','phone','branch'] : ['date','subject','lecture','time','batch','branch'];
+  const cols = importKind==='both' ? ['date','subject','lecture','examName','time','batch','branch','creates'] : importKind==='exam' ? ['date','subject','examName','branch'] : importKind==='teacher' ? ['name','subject','rangeLabel','phone','branch'] : ['date','subject','lecture','time','batch','branch'];
   document.getElementById('import-preview').innerHTML=`
     <p class="hint">${bn(validCount)}টি ঠিক আছে, ${bn(rows.length-validCount)}টি বাদ যাবে। নিচে দেখে নিশ্চিত করুন।</p>
     <div class="table-wrap" style="max-height:260px"><table>
@@ -1450,9 +1469,29 @@ function previewBulk(){
   const btnRow=document.querySelector('.modalactions');
   btnRow.innerHTML=`<button class="btn soft" onclick="closeModal()">বাতিল</button><button class="btn primary" onclick="commitBulk()">✅ ${bn(validCount)}টি নিশ্চিত করে ইম্পোর্ট করুন</button>`;
 }
+function commitBoth(){
+  let nc=0,ne=0,dup=0;
+  importPreviewRows.filter(r=>r.ok).forEach(r=>{
+    const x=r.rec;
+    if(!data.branches.includes(x.branch)) data.branches.push(x.branch);
+    if(x.lecture){
+      if(data.classes.some(c=>c.date===x.date&&c.subject===x.subject&&String(c.lecture)===x.lecture&&c.branch===x.branch)) dup++;
+      else{ const rc={id:uid('c'),date:x.date,subject:x.subject,lecture:x.lecture,time:x.time,batch:x.batch,branch:x.branch}; data.classes.push(rc); persist('classes','set',rc); nc++; }
+    }
+    if(x.examName){
+      if(data.exams.some(e=>e.date===x.date&&e.subject===x.subject&&e.examName===x.examName&&e.branch===x.branch)) dup++;
+      else{ const re={id:uid('e'),date:x.date,subject:x.subject,examName:x.examName,branch:x.branch}; data.exams.push(re); persist('exams','set',re); ne++; }
+    }
+  });
+  persist('branches','replace',data.branches);
+  saveLocalOnly();closeModal();renderAll();
+  logAudit('bulk_import',`ক্লাস+পরীক্ষা — ${bn(nc)}টি ক্লাস, ${bn(ne)}টি পরীক্ষা যোগ হয়েছে`);
+  toast(`${bn(nc)}টি ক্লাস ও ${bn(ne)}টি পরীক্ষা যোগ হয়েছে`+(dup?` (${bn(dup)}টি আগে থেকেই ছিল, বাদ)`:''));
+}
 function commitBulk(){
   if(!importPreviewRows){toast('আগে প্রিভিউ দেখুন');return;}
   const kindPermMap={class:'classes',exam:'exams',teacher:'teachers'};
+  if(importKind==='both'){ commitBoth(); return; }
   if(!hasPerm(kindPermMap[importKind])){toast('এই ইম্পোর্টের অনুমতি নেই');return;}
   let added=0;
   importPreviewRows.filter(r=>r.ok).forEach(r=>{
